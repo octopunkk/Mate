@@ -1,0 +1,16 @@
+{
+  "name": "blindtestback",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "dotenv nodemon src/mateBack.js"
+  },
+  "dependencies": {
+    "@koa/cors": "^4.0.0",
+    "dotenv-cli": "^6.0.0",
+    "koa": "^2.13.1",
+    "koa-bodyparser": "^4.3.0",
+    "koa-router": "^12.0.0",
+    "spotify-web-api-node": "^5.0.2"
+  }
+}
