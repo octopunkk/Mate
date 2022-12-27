@@ -3,7 +3,10 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "dev": "dotenv nodemon src/mateBack.js"
+    "start": "dotenv npm run migrate up && dotenv node src/mateBack.js",
+    "dev": "dotenv -c -- npm run migrate up && dotenv -c -- nodemon src/mateBack.js",
+    "down": "dotenv -c -- npm run migrate down",
+    "migrate": "ley"
   },
   "dependencies": {
     "@koa/cors": "^4.0.0",
@@ -12,5 +15,8 @@
     "koa-bodyparser": "^4.3.0",
     "koa-router": "^12.0.0",
     "spotify-web-api-node": "^5.0.2"
+  },
+  "devDependencies": {
+    "ley": "^0.8.1"
   }
 }
