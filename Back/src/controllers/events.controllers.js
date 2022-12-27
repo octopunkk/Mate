@@ -5,7 +5,7 @@ const Spotify = require("../utils/spotify");
 const events_db = [{ k1: "a" }];
 
 const getAuthURL = (ctx) => {
-  ctx.body = { url: Spotify.authorizeURL };
+  ctx.body = { url: Spotify.authorizeURL() };
   ctx.status = 200;
 };
 

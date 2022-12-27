@@ -26,9 +26,20 @@ async function getData() {
   console.log(json);
 }
 
-async function getSpotifyTokens() {}
+async function getSpotifyTokens() {
+  const redirectURL = await Spotify.getAuthorizeURL();
+  window.location = redirectURL;
+}
 
-console.log(await Spotify.getAuthorizeURL());
+const checkForAuthCode = () => {
+  let urlParams = new URLSearchParams(location.search);
+  let authCode = urlParams.get("code");
+  if (authCode) {
+    console.log(authCode);
+  }
+};
+
+checkForAuthCode();
 
 function App() {
   return (
@@ -36,7 +47,7 @@ function App() {
       <h1>Blind Test sans nom pour le moment</h1>
       <p>Et sans blind test</p>
       <p>Ça arrive</p>
-      <button>Login with Spotify</button>
+      <button onClick={getSpotifyTokens}>Login with Spotify</button>
     </div>
   );
 }
