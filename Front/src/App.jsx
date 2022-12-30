@@ -3,8 +3,7 @@ import reactLogo from "./assets/react.svg";
 import "./App.css";
 import Spotify from "./utils/spotify";
 
-const URL = "http://127.0.0.1:8000/add_event";
-const URLget = "http://127.0.0.1:8000/events_list";
+const URL = "http://127.0.0.1:8000/";
 
 async function postData(data) {
   const response = await fetch(URL, {
@@ -16,6 +15,20 @@ async function postData(data) {
     },
     cache: "default",
     body: JSON.stringify(data),
+  });
+  console.log(response);
+}
+
+async function postAuthCode(authCode) {
+  const response = await fetch(URL + "user", {
+    method: "POST",
+    mode: "cors",
+    credentials: "same-origin",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    cache: "default",
+    body: JSON.stringify({ authCode }),
   });
   console.log(response);
 }
@@ -35,7 +48,7 @@ const checkForAuthCode = () => {
   let urlParams = new URLSearchParams(location.search);
   let authCode = urlParams.get("code");
   if (authCode) {
-    console.log(authCode);
+    postAuthCode(authCode);
   }
 };
 

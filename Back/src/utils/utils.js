@@ -7,4 +7,8 @@ const getRandomState = (num) => {
   return state;
 };
 
-module.exports = { getRandomState };
+const getExpireDate = (expires_in) => {
+  return new Date() + expires_in;
+};
+
+module.exports = { getRandomState, getExpireDate };

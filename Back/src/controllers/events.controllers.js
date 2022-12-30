@@ -14,6 +14,13 @@ const getEvents = (ctx) => {
   ctx.status = 200;
 };
 
+async function addUser(ctx) {
+  const userTokens = await Spotify.getUserTokens(ctx.request.body.authCode);
+  const userId = await Spotify.getUserSpotifyId(userTokens);
+  // TODO : add to db
+  ctx.body = "User added";
+  ctx.status = 201;
+}
 const addEvent = (ctx) => {
   events_db.push(ctx.request.body);
   ctx.body = "Event Created!";
@@ -24,4 +31,5 @@ module.exports = {
   getEvents,
   addEvent,
   getAuthURL,
+  addUser,
 };
