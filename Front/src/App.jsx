@@ -30,7 +30,8 @@ async function postAuthCode(authCode) {
     cache: "default",
     body: JSON.stringify({ authCode }),
   });
-  console.log(response);
+  let json = await response.json();
+  console.log(json);
 }
 
 async function getData() {

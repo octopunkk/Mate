@@ -16,9 +16,13 @@ const getEvents = (ctx) => {
 
 async function addUser(ctx) {
   const userTokens = await Spotify.getUserTokens(ctx.request.body.authCode);
-  const userId = await Spotify.getUserSpotifyId(userTokens);
-  // TODO : add to db
-  ctx.body = "User added";
+  const user = await Spotify.getUserData(userTokens);
+  console.log(user);
+  ctx.body = {
+    auth_token: user.auth_token,
+    display_name: user.spotify_display_name,
+    profile_pic: user.spotify_profile_pic,
+  };
   ctx.status = 201;
 }
 const addEvent = (ctx) => {

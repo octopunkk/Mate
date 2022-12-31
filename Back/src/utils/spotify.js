@@ -1,5 +1,6 @@
 const SpotifyWebApi = require("spotify-web-api-node");
 const utils = require("../utils/utils");
+const sql = require("../sql");
 
 const mainSpotifyApi = new SpotifyWebApi({
   clientId: process.env.SPOTIFY_CLIENT_ID,
@@ -16,7 +17,7 @@ const authorizeURL = () => {
 async function getUserTokens(code) {
   const data = await mainSpotifyApi.authorizationCodeGrant(code);
   return {
-    expires_in: utils.getExpireDate(data.body["expires_in"]),
+    expire_date: utils.getExpireDate(data.body["expires_in"]),
     access_token: data.body["access_token"],
     refresh_token: data.body["refresh_token"],
   };
@@ -27,14 +28,16 @@ async function refreshSpotifyToken(userSpotifyApi, expire_date) {
     if (!expire_date || Date.now() > expire_date) {
       const data = await userSpotifyApi.refreshAccessToken();
       userSpotifyApi.setAccessToken(data.body["access_token"]);
+      expire_date = utils.getExpireDate(data.body["expires_in"]);
+      sql.refreshToken();
     }
   } catch (err) {
     console.log("Could not refresh access token", err);
   }
-  return userSpotifyApi;
+  return expire_date;
 }
 
-async function getUserSpotifyId(userTokens) {
+async function getUserData(userTokens) {
   let userSpotifyApi = new SpotifyWebApi({
     clientId: process.env.SPOTIFY_CLIENT_ID,
     clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
@@ -42,14 +45,22 @@ async function getUserSpotifyId(userTokens) {
     accessToken: userTokens.access_token,
     refreshToken: userTokens.refresh_token,
   });
-  userSpotifyApi = await refreshSpotifyToken(
+  userTokens.expire_date = await refreshSpotifyToken(
     userSpotifyApi,
     userTokens.expire_date
   );
-  console.log(userSpotifyApi);
   const userData = await userSpotifyApi.getMe();
-  console.log(userData);
-  return userData;
+  let user = {
+    spotify_user_id: userData.body.id,
+    spotify_auth_token: userSpotifyApi.getAccessToken(),
+    spotify_refresh_token: userSpotifyApi.getRefreshToken(),
+    spotify_expires_at: userTokens.expire_date,
+    spotify_display_name: userData.body.display_name,
+    spotify_profile_pic: userData.body.images[0].url,
+    auth_token: utils.generateAuthToken(),
+  };
+  user = await sql.upsertUser(user);
+  return user[0];
 }
 
-module.exports = { authorizeURL, getUserTokens, getUserSpotifyId };
+module.exports = { authorizeURL, getUserTokens, getUserData };

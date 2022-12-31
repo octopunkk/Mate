@@ -1,3 +1,5 @@
+const crypto = require("crypto");
+
 const getRandomState = (num) => {
   let state = "";
   for (let i = 0; i < num; i++) {
@@ -7,8 +9,8 @@ const getRandomState = (num) => {
   return state;
 };
 
-const getExpireDate = (expires_in) => {
-  return new Date() + expires_in;
-};
+const getExpireDate = (expires_in) => new Date() + expires_in;
 
-module.exports = { getRandomState, getExpireDate };
+const generateAuthToken = () => crypto.randomBytes(32).toString("hex");
+
+module.exports = { getRandomState, getExpireDate, generateAuthToken };
