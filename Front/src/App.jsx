@@ -1,44 +1,7 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
 import "./App.css";
 import Spotify from "./utils/spotify";
-
-const URL = "http://127.0.0.1:8000/";
-
-async function postData(data) {
-  const response = await fetch(URL, {
-    method: "POST",
-    mode: "cors",
-    credentials: "same-origin",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    cache: "default",
-    body: JSON.stringify(data),
-  });
-  console.log(response);
-}
-
-async function postAuthCode(authCode) {
-  const response = await fetch(URL + "user", {
-    method: "POST",
-    mode: "cors",
-    credentials: "same-origin",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    cache: "default",
-    body: JSON.stringify({ authCode }),
-  });
-  let json = await response.json();
-  console.log(json);
-}
-
-async function getData() {
-  let data = await fetch(URLget, { method: "GET" });
-  let json = await data.json();
-  console.log(json);
-}
+import server from "./utils/server";
+import { Routes, Route, Outlet, Link } from "react-router-dom";
 
 async function getSpotifyTokens() {
   const redirectURL = await Spotify.getAuthorizeURL();
@@ -49,10 +12,21 @@ const checkForAuthCode = () => {
   let urlParams = new URLSearchParams(location.search);
   let authCode = urlParams.get("code");
   if (authCode) {
-    postAuthCode(authCode);
+    server.postAuthCode(authCode);
   }
 };
 
+const getAuthToken = () => {
+  const authToken = localStorage.getItem("authToken");
+  if (authToken) {
+    // verify token server-side
+    const tokenIsValid = server.postAuthToken(authToken);
+    if (tokenIsValid) {
+      // go to welcome page
+    }
+  }
+};
+getAuthToken();
 checkForAuthCode();
 
 function App() {

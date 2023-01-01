@@ -1,4 +1,5 @@
 const Spotify = require("../utils/spotify");
+const sql = require("../sql");
 
 // Probably should update this soon to switch to an actual DB
 
@@ -17,7 +18,6 @@ const getEvents = (ctx) => {
 async function addUser(ctx) {
   const userTokens = await Spotify.getUserTokens(ctx.request.body.authCode);
   const user = await Spotify.getUserData(userTokens);
-  console.log(user);
   ctx.body = {
     auth_token: user.auth_token,
     display_name: user.spotify_display_name,
@@ -25,6 +25,13 @@ async function addUser(ctx) {
   };
   ctx.status = 201;
 }
+
+async function verifyAuthToken(ctx) {
+  const user = await sql.userFromAuthToken(ctx.request.body.authToken);
+  ctx.body = { ok: Boolean(user) };
+  ctx.status = 201;
+}
+
 const addEvent = (ctx) => {
   events_db.push(ctx.request.body);
   ctx.body = "Event Created!";
@@ -36,4 +43,5 @@ module.exports = {
   addEvent,
   getAuthURL,
   addUser,
+  verifyAuthToken,
 };

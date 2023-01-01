@@ -52,7 +52,7 @@ async function refreshToken(
   spotify_auth_token,
   spotify_expires_at
 ) {
-  const q = await sql`
+  const q = await db`
   UPDATE users
   SET spotify_auth_token = ${spotify_auth_token}, spotify_expires_at = ${spotify_expires_at}
   WHERE spotify_user_id = ${spotify_user_id}

@@ -24,32 +24,44 @@ async function getUserTokens(code) {
 }
 
 async function refreshSpotifyToken(userSpotifyApi, expire_date) {
+  let newExpireDate = false;
   try {
-    if (!expire_date || Date.now() > expire_date) {
+    if (!expire_date || Date.now() > Date.parse(expire_date)) {
       const data = await userSpotifyApi.refreshAccessToken();
       userSpotifyApi.setAccessToken(data.body["access_token"]);
-      expire_date = utils.getExpireDate(data.body["expires_in"]);
-      sql.refreshToken();
+      newExpireDate = utils.getExpireDate(data.body["expires_in"]);
     }
   } catch (err) {
     console.log("Could not refresh access token", err);
   }
-  return expire_date;
+  return newExpireDate;
 }
 
-async function getUserData(userTokens) {
-  let userSpotifyApi = new SpotifyWebApi({
+async function createUserSpotifyApi(userTokens) {
+  return new SpotifyWebApi({
     clientId: process.env.SPOTIFY_CLIENT_ID,
     clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
     redirectUri: process.env.SPOTIFY_REDIRECT_URI,
     accessToken: userTokens.access_token,
     refreshToken: userTokens.refresh_token,
   });
-  userTokens.expire_date = await refreshSpotifyToken(
+}
+
+async function getUserData(userTokens) {
+  let userSpotifyApi = await createUserSpotifyApi(userTokens);
+  const newExpireDate = await refreshSpotifyToken(
     userSpotifyApi,
     userTokens.expire_date
   );
   const userData = await userSpotifyApi.getMe();
+  if (newExpireDate) {
+    userTokens.expire_date = newExpireDate;
+    sql.refreshToken(
+      userData.body.id,
+      userSpotifyApi.getAccessToken(),
+      newExpireDate
+    );
+  }
   let user = {
     spotify_user_id: userData.body.id,
     spotify_auth_token: userSpotifyApi.getAccessToken(),
