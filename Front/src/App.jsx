@@ -1,7 +1,7 @@
 import "./App.css";
 import Spotify from "./utils/spotify";
 import server from "./utils/server";
-import { Routes, Route, Outlet, Link } from "react-router-dom";
+import { useEffect } from "react";
 
 async function getSpotifyTokens() {
   const redirectURL = await Spotify.getAuthorizeURL();
@@ -23,13 +23,19 @@ const getAuthToken = () => {
     const tokenIsValid = server.postAuthToken(authToken);
     if (tokenIsValid) {
       // go to welcome page
+      window.location = "/welcome";
+    } else {
+      checkForAuthCode();
     }
+  } else {
+    checkForAuthCode();
   }
 };
-getAuthToken();
-checkForAuthCode();
+// getAuthToken();
 
 function App() {
+  useEffect(getAuthToken, []);
+
   return (
     <div className="App">
       <h1>Blind Test sans nom pour le moment</h1>
