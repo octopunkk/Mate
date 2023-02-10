@@ -18,9 +18,9 @@ async function displayUsers() {
 async function upsertUser(user) {
   const q = await db`
   INSERT INTO users (
-    spotify_user_id, spotify_auth_token, spotify_refresh_token, spotify_expires_at, spotify_display_name, spotify_profile_pic, auth_token
+    spotify_user_id, spotify_auth_token, spotify_refresh_token, spotify_expires_at, spotify_display_name, auth_token
   ) VALUES (
-    ${user.spotify_user_id}, ${user.spotify_auth_token}, ${user.spotify_refresh_token}, ${user.spotify_expires_at}, ${user.spotify_display_name}, ${user.spotify_profile_pic},${user.auth_token}
+    ${user.spotify_user_id}, ${user.spotify_auth_token}, ${user.spotify_refresh_token}, ${user.spotify_expires_at}, ${user.spotify_display_name},${user.auth_token}
   )
   ON CONFLICT DO NOTHING
   RETURNING *

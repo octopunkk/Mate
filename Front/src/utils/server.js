@@ -1,41 +1,48 @@
 const URL = "http://127.0.0.1:8000/";
 
-// async function getData() {
-//   let data = await fetch(URLget, { method: "GET" });
-//   let json = await data.json();
-//   console.log(json);
-// }
-
-async function postAuthCode(authCode) {
-  const response = await fetch(URL + "user", {
+const postData = async (data, endpoint, authToken) => {
+  const response = await fetch(URL + endpoint, {
     method: "POST",
     mode: "cors",
     credentials: "same-origin",
     headers: {
       "Content-Type": "application/json",
+      Authorization: "Bearer " + authToken,
     },
-    cache: "default",
-    body: JSON.stringify({ authCode }),
-  });
-  let json = await response.json();
-  localStorage.setItem("authToken", json.auth_token);
-  localStorage.setItem("displayName", json.display_name);
-  localStorage.setItem("profilePic", json.profile_pic);
-}
 
-async function postAuthToken(authToken) {
-  const response = await fetch(URL + "authToken", {
-    method: "POST",
+    cache: "default",
+    body: JSON.stringify(data),
+  });
+  return await response.json();
+};
+
+const getData = async (endpoint, authToken) => {
+  const response = await fetch(URL + endpoint, {
+    method: "GET",
     mode: "cors",
     credentials: "same-origin",
     headers: {
       "Content-Type": "application/json",
+      Authorization: "Bearer " + authToken,
     },
     cache: "default",
-    body: JSON.stringify({ authToken }),
   });
-  let json = await response.json();
-  return json.ok;
-}
+  return await response.json();
+};
 
-export default { postAuthCode, postAuthToken };
+const postAuthCode = async (authCode) => {
+  const response = await postData({ authCode }, "user");
+  localStorage.setItem("authToken", response.auth_token);
+  return response;
+};
+
+const getUser = async (authToken) => {
+  try {
+    const response = await getData("user", authToken);
+    return response;
+  } catch {
+    return 0;
+  }
+};
+
+export default { postAuthCode, getUser };

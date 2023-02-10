@@ -68,7 +68,6 @@ async function getUserData(userTokens) {
     spotify_refresh_token: userSpotifyApi.getRefreshToken(),
     spotify_expires_at: userTokens.expire_date,
     spotify_display_name: userData.body.display_name,
-    spotify_profile_pic: userData.body.images[0].url,
     auth_token: utils.generateAuthToken(),
   };
   user = await sql.upsertUser(user);

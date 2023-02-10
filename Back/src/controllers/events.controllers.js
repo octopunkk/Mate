@@ -11,20 +11,27 @@ async function addUser(ctx) {
   const user = await Spotify.getUserData(userTokens);
   ctx.body = {
     auth_token: user.auth_token,
-    display_name: user.spotify_display_name,
-    profile_pic: user.spotify_profile_pic,
   };
   ctx.status = 201;
 }
 
-async function verifyAuthToken(ctx) {
-  const user = await sql.userFromAuthToken(ctx.request.body.authToken);
-  ctx.body = { ok: Boolean(user) };
-  ctx.status = 201;
+async function getUser(ctx) {
+  authToken = ctx.header.authorization.split(" ")[1];
+  const user = (await sql.userFromAuthToken(authToken))[0];
+  if (user) {
+    ctx.body = {
+      displayName: user.spotify_display_name,
+      userId: user.spotify_user_id,
+    };
+    ctx.status = 200;
+  } else {
+    ctx.body = "Authentification failed";
+    ctx.status = 401;
+  }
 }
 
 module.exports = {
   getAuthURL,
   addUser,
-  verifyAuthToken,
+  getUser,
 };

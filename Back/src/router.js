@@ -3,12 +3,12 @@ const router = new Router();
 const {
   getAuthURL,
   addUser,
-  verifyAuthToken,
+  getUser,
 } = require("./controllers/events.controllers");
 
 router.get("/get_auth_url", getAuthURL);
 
 router.post("/user", addUser);
-router.post("/authToken", verifyAuthToken);
+router.get("/user", getUser);
 
 module.exports = router;

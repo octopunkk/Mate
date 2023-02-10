@@ -6,7 +6,6 @@ exports.up = async function (DB) {
       spotify_refresh_token text NOT NULL,
       spotify_expires_at DATE NOT NULL,
       spotify_display_name text,
-      spotify_profile_pic text,
       auth_token text NOT NULL
     )
   `;
