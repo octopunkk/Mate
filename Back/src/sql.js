@@ -1,3 +1,4 @@
+const utils = require("./utils/utils");
 const postgres = require("postgres");
 
 const db = postgres({
@@ -60,10 +61,42 @@ async function refreshToken(
   return q;
 }
 
+async function getRoomFromHost(spotify_user_id) {
+  const q = await db`
+  SELECT * FROM rooms
+  WHERE host_player_id = ${spotify_user_id}
+  `;
+  if (q[0]) {
+    return q;
+  } else {
+    const roomId = utils.getRandomState(5);
+    const q2 = await db`
+    INSERT INTO rooms (
+      room_id, host_player_id
+    ) VALUES (
+      ${roomId}, ${spotify_user_id}
+    )
+    RETURNING *
+
+    `;
+
+    return q2;
+  }
+}
+async function getRoomFromId(room_id) {
+  const q = await db`
+  SELECT * FROM rooms
+  WHERE room_id = ${room_id}
+`;
+  return q;
+}
+
 module.exports = {
   upsertUser,
   displayUsers,
   userFromAuthToken,
   userFromId,
   refreshToken,
+  getRoomFromHost,
+  getRoomFromId,
 };

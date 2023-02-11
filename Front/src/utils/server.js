@@ -45,4 +45,13 @@ const getUser = async (authToken) => {
   }
 };
 
-export default { postAuthCode, getUser };
+const createRoom = async (authToken) => {
+  try {
+    const response = await postData({}, "createRoom", authToken);
+    return response;
+  } catch {
+    return 0;
+  }
+};
+
+export default { postAuthCode, getUser, createRoom };

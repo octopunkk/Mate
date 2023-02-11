@@ -11,6 +11,9 @@ function Welcome() {
     localStorage.clear();
     navigate("/");
   };
+  const goToWaitingRoom = () => {
+    navigate("../waitingRoom");
+  };
 
   useEffect(() => {
     const getUser = async () => {
@@ -30,10 +33,10 @@ function Welcome() {
         size={100}
         name={user.userId}
         variant="beam"
-        colors={["#92A1C6", "#146A7C", "#F0AB3D", "#C271B4", "#C20D90"]}
+        colors={["#F6D76B", "#FF9036", "#D6254D", "#FF5475", "#FDEBA9"]}
       />
       <br /> <br />
-      <button>Créer une partie</button>
+      <button onClick={goToWaitingRoom}>Créer une partie</button>
       <br /> <br />
       <button>Rejoindre une partie</button>
       <br /> <br />

@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
 import Welcome from "./components/Welcome";
+import WaitingRoom from "./components/WaitingRoom";
 import "./index.css";
 import {
   createBrowserRouter,
@@ -18,6 +19,10 @@ const router = createBrowserRouter([
   {
     path: "/welcome",
     element: <Welcome />,
+  },
+  {
+    path: "/waitingRoom",
+    element: <WaitingRoom />,
   },
 ]);
 
