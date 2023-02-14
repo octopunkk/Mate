@@ -54,4 +54,13 @@ const createRoom = async (authToken) => {
   }
 };
 
-export default { postAuthCode, getUser, createRoom };
+const getPlayersInRoom = async (authToken, roomId) => {
+  try {
+    const response = await getData("getPlayersInRoom/" + roomId, authToken);
+    return response;
+  } catch {
+    return 0;
+  }
+};
+
+export default { postAuthCode, getUser, createRoom, getPlayersInRoom };

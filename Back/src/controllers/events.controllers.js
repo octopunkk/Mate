@@ -35,11 +35,24 @@ async function createRoom(ctx) {
   const user = (await sql.userFromAuthToken(authToken))[0];
   if (user) {
     const res = await sql.getRoomFromHost(user.spotify_user_id);
-    console.log(res);
+    // console.log(res);
     ctx.body = {
       roomId: res[0].room_id,
     };
     ctx.status = 201;
+  } else {
+    ctx.body = "Authentification failed";
+    ctx.status = 401;
+  }
+}
+
+async function getPlayersInRoom(ctx) {
+  const authToken = ctx.header.authorization.split(" ")[1];
+  const user = (await sql.userFromAuthToken(authToken))[0];
+  if (user) {
+    const res = await sql.getPlayersFromRoom(ctx.params.roomId);
+    ctx.body = res[0];
+    ctx.status = 200;
   } else {
     ctx.body = "Authentification failed";
     ctx.status = 401;
@@ -51,4 +64,5 @@ module.exports = {
   addUser,
   getUser,
   createRoom,
+  getPlayersInRoom,
 };

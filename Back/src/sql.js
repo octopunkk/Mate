@@ -40,6 +40,7 @@ async function userFromId(spotify_user_id) {
   `;
   return q;
 }
+
 async function userFromAuthToken(auth_token) {
   const q = await db`
     SELECT * FROM users
@@ -61,6 +62,18 @@ async function refreshToken(
   return q;
 }
 
+async function addPlayerToRoom(spotify_user_id, room_id) {
+  const q = await db`
+    INSERT INTO playersInRooms (
+      room_id, player_id
+    ) VALUES (
+      ${room_id}, ${spotify_user_id}
+    )
+    RETURNING *
+    `;
+  return q;
+}
+
 async function getRoomFromHost(spotify_user_id) {
   const q = await db`
   SELECT * FROM rooms
@@ -77,16 +90,29 @@ async function getRoomFromHost(spotify_user_id) {
       ${roomId}, ${spotify_user_id}
     )
     RETURNING *
-
     `;
-
+    addPlayerToRoom(spotify_user_id, roomId);
     return q2;
   }
 }
+
 async function getRoomFromId(room_id) {
   const q = await db`
   SELECT * FROM rooms
   WHERE room_id = ${room_id}
+`;
+  return q;
+}
+
+async function getPlayersFromRoom(room_id) {
+  const q = await db`
+  SELECT 
+    jsonb_agg(to_jsonb(users) - 'spotify_auth_token' - 'spotify_refresh_token' - 'spotify_expires_at' - 'auth_token') AS players
+  FROM playersInRooms
+  INNER JOIN users
+  ON player_id = spotify_user_id
+  WHERE room_id = ${room_id}
+  GROUP BY room_id
 `;
   return q;
 }
@@ -99,4 +125,6 @@ module.exports = {
   refreshToken,
   getRoomFromHost,
   getRoomFromId,
+  addPlayerToRoom,
+  getPlayersFromRoom,
 };
