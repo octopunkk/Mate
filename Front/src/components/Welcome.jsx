@@ -11,8 +11,8 @@ function Welcome() {
     localStorage.clear();
     navigate("/");
   };
-  const goToWaitingRoom = () => {
-    navigate("../waitingRoom");
+  const goToWaitingRoomHost = () => {
+    navigate("../waitingRoomHost");
   };
   const goToJoinRoom = () => {
     navigate("../joinRoom");
@@ -39,7 +39,7 @@ function Welcome() {
         colors={["#F6D76B", "#FF9036", "#D6254D", "#FF5475", "#FDEBA9"]}
       />
       <br /> <br />
-      <button onClick={goToWaitingRoom}>Créer une partie</button>
+      <button onClick={goToWaitingRoomHost}>Créer une partie</button>
       <br /> <br />
       <button onClick={goToJoinRoom}>Rejoindre une partie</button>
       <br /> <br />

@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import server from "../utils/server";
 import Avatar from "boring-avatars";
-import "./WaitingRoom.css";
+import "./WaitingRoomHost.css";
 
-function WaitingRoom() {
+function WaitingRoomHost() {
   const [roomId, setRoomId] = useState("");
   const [user, setUser] = useState({});
   const [players, setPlayers] = useState();
@@ -47,7 +47,7 @@ function WaitingRoom() {
   }, [roomId]);
 
   return (
-    <div className="WaitingRoom">
+    <div className="WaitingRoomHost">
       <h2>Les joueurs peuvent rejoindre la partie</h2>
       <h3>Joueurs dans la partie : </h3>
 
@@ -77,4 +77,4 @@ function WaitingRoom() {
   );
 }
 
-export default WaitingRoom;
+export default WaitingRoomHost;
