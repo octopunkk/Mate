@@ -69,8 +69,10 @@ async function addPlayerToRoom(spotify_user_id, room_id) {
     ) VALUES (
       ${room_id}, ${spotify_user_id}
     )
+    ON CONFLICT DO NOTHING
     RETURNING *
     `;
+  console.log(q);
   return q;
 }
 

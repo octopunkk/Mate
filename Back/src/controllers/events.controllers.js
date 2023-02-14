@@ -64,7 +64,7 @@ async function joinRoom(ctx) {
   if (user) {
     const res = await sql.joinRoom(ctx.params.roomId, user.spotify_user_id);
     if (res) {
-      ctx.body = res[0];
+      ctx.body = res;
       ctx.status = 201;
     } else {
       ctx.body = "Room doesn't exist";

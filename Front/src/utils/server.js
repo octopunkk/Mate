@@ -16,7 +16,7 @@ const postData = async (data, endpoint, authToken) => {
   if (response.ok) {
     return await response.json();
   } else {
-    return new Error(response.statusText);
+    throw new Error(response.statusText);
   }
 };
 
