@@ -13,7 +13,11 @@ const postData = async (data, endpoint, authToken) => {
     cache: "default",
     body: JSON.stringify(data),
   });
-  return await response.json();
+  if (response.ok) {
+    return await response.json();
+  } else {
+    return new Error(response.statusText);
+  }
 };
 
 const getData = async (endpoint, authToken) => {
@@ -63,4 +67,14 @@ const getPlayersInRoom = async (authToken, roomId) => {
   }
 };
 
-export default { postAuthCode, getUser, createRoom, getPlayersInRoom };
+const joinRoom = async (authToken, roomId) => {
+  return await postData({}, "join/" + roomId, authToken);
+};
+
+export default {
+  postAuthCode,
+  getUser,
+  createRoom,
+  getPlayersInRoom,
+  joinRoom,
+};

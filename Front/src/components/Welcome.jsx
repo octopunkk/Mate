@@ -14,6 +14,9 @@ function Welcome() {
   const goToWaitingRoom = () => {
     navigate("../waitingRoom");
   };
+  const goToJoinRoom = () => {
+    navigate("../joinRoom");
+  };
 
   useEffect(() => {
     const getUser = async () => {
@@ -38,7 +41,7 @@ function Welcome() {
       <br /> <br />
       <button onClick={goToWaitingRoom}>Créer une partie</button>
       <br /> <br />
-      <button>Rejoindre une partie</button>
+      <button onClick={goToJoinRoom}>Rejoindre une partie</button>
       <br /> <br />
       <button onClick={disconnect}>Se déconnecter</button>
     </div>

@@ -58,6 +58,23 @@ async function getPlayersInRoom(ctx) {
     ctx.status = 401;
   }
 }
+async function joinRoom(ctx) {
+  const authToken = ctx.header.authorization.split(" ")[1];
+  const user = (await sql.userFromAuthToken(authToken))[0];
+  if (user) {
+    const res = await sql.joinRoom(ctx.params.roomId, user.spotify_user_id);
+    if (res) {
+      ctx.body = res[0];
+      ctx.status = 201;
+    } else {
+      ctx.body = "Room doesn't exist";
+      ctx.status = 404;
+    }
+  } else {
+    ctx.body = "Authentification failed";
+    ctx.status = 401;
+  }
+}
 
 module.exports = {
   getAuthURL,
@@ -65,4 +82,5 @@ module.exports = {
   getUser,
   createRoom,
   getPlayersInRoom,
+  joinRoom,
 };

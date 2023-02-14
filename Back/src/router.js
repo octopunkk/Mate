@@ -6,6 +6,7 @@ const {
   getUser,
   createRoom,
   getPlayersInRoom,
+  joinRoom,
 } = require("./controllers/events.controllers");
 
 router.get("/get_auth_url", getAuthURL);
@@ -16,5 +17,7 @@ router.get("/user", getUser);
 router.post("/createRoom", createRoom);
 
 router.get("/getPlayersInRoom/:roomId", getPlayersInRoom);
+
+router.post("/join/:roomId", joinRoom);
 
 module.exports = router;

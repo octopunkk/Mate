@@ -117,6 +117,12 @@ async function getPlayersFromRoom(room_id) {
   return q;
 }
 
+async function joinRoom(room_id, player_id) {
+  if ((await getRoomFromId(room_id))[0]) {
+    return await addPlayerToRoom(player_id, room_id);
+  }
+}
+
 module.exports = {
   upsertUser,
   displayUsers,
@@ -127,4 +133,5 @@ module.exports = {
   getRoomFromId,
   addPlayerToRoom,
   getPlayersFromRoom,
+  joinRoom,
 };
