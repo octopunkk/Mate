@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import App from "./App";
 import Welcome from "./components/Welcome";
 import WaitingRoomHost from "./components/WaitingRoomHost";
+import WaitingRoomPlayer from "./components/WaitingRoomPlayer";
 import JoinRoom from "./components/JoinRoom";
 import "./index.css";
 import {
@@ -24,6 +25,10 @@ const router = createBrowserRouter([
   {
     path: "/waitingRoomHost",
     element: <WaitingRoomHost />,
+  },
+  {
+    path: "/waitingRoom/:roomId",
+    element: <WaitingRoomPlayer />,
   },
   {
     path: "/joinRoom",

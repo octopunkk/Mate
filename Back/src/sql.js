@@ -72,8 +72,11 @@ async function addPlayerToRoom(spotify_user_id, room_id) {
     ON CONFLICT DO NOTHING
     RETURNING *
     `;
-  console.log(q);
-  return q;
+  const q2 = await db`
+  SELECT room_id FROM playersInRooms
+  WHERE player_id = ${spotify_user_id} AND room_id = ${room_id}
+  `;
+  return q2;
 }
 
 async function getRoomFromHost(spotify_user_id) {

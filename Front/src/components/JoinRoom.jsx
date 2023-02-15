@@ -1,18 +1,19 @@
 import { useState, useEffect } from "react";
 import server from "../utils/server";
+import { useNavigate } from "react-router-dom";
 
 function JoinRoom() {
   const [roomCode, setRoomCode] = useState("");
   const [errMessage, setErrMessage] = useState({ err: "", status: "hidden" });
+  const navigate = useNavigate();
 
   const join = async () => {
     if (roomCode.length == 5) {
       try {
-        const room = await server.joinRoom(
-          localStorage.getItem("authToken"),
-          roomCode
-        );
-        console.log({ room });
+        const room = (
+          await server.joinRoom(localStorage.getItem("authToken"), roomCode)
+        )[0];
+        navigate("../waitingRoom/" + room.room_id);
       } catch (e) {
         console.error(e);
         setErrMessage({
