@@ -58,3 +58,12 @@
 .redButton:hover {
   border-color: #ef5350;
 }
+
+.icon {
+  padding: 5px;
+}
+.icon:hover {
+  background-color: #00000080;
+  cursor: pointer;
+  border-radius: 20%;
+}

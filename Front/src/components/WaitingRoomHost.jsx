@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import server from "../utils/server";
 import Avatar from "boring-avatars";
 import "./WaitingRoomHost.css";
+import PersonRemoveIcon from "@mui/icons-material/PersonRemove";
 
 function WaitingRoomHost() {
   const [roomId, setRoomId] = useState("");
@@ -61,6 +62,21 @@ function WaitingRoomHost() {
                 colors={["#F6D76B", "#FF9036", "#D6254D", "#FF5475", "#FDEBA9"]}
               />{" "}
               {player.spotify_display_name}
+              {player.spotify_user_id !== user.userId ? (
+                <PersonRemoveIcon
+                  color="error"
+                  className="icon"
+                  onClick={() =>
+                    server.kickFromRoom(
+                      localStorage.getItem("authToken"),
+                      roomId,
+                      player.spotify_user_id
+                    )
+                  }
+                />
+              ) : (
+                " (toi)"
+              )}
             </p>
           );
         })}

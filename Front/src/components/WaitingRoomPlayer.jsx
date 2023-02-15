@@ -54,7 +54,6 @@ function WaitingRoomPlayer() {
           localStorage.getItem("authToken"),
           roomId
         );
-        console.log(res);
         setHost({
           displayName: res.spotify_display_name,
           userId: res.host_user_id,

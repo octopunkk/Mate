@@ -107,6 +107,33 @@ async function quitRoom(ctx) {
     ctx.status = 401;
   }
 }
+async function kickFromRoom(ctx) {
+  const authToken = ctx.header.authorization.split(" ")[1];
+  const user = (await sql.userFromAuthToken(authToken))[0];
+  if (user) {
+    const host = await sql.getHost(ctx.params.roomId);
+
+    if (host[0].host_player_id == user.spotify_user_id) {
+      const res = await sql.quitRoom(
+        ctx.params.roomId,
+        ctx.request.body.player_id
+      );
+      if (res) {
+        ctx.body = res;
+        ctx.status = 200;
+      } else {
+        ctx.body = res;
+        ctx.status = 400;
+      }
+    } else {
+      ctx.body = "Request unauthorized";
+      ctx.status = 403;
+    }
+  } else {
+    ctx.body = "Authentification failed";
+    ctx.status = 401;
+  }
+}
 
 module.exports = {
   getAuthURL,
@@ -117,4 +144,5 @@ module.exports = {
   joinRoom,
   getHost,
   quitRoom,
+  kickFromRoom,
 };

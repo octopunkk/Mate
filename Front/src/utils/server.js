@@ -83,6 +83,10 @@ const quitRoom = async (authToken, roomId) => {
   return await postData({}, "quit/" + roomId, authToken);
 };
 
+const kickFromRoom = async (authToken, roomId, playerId) => {
+  return await postData({ player_id: playerId }, "kick/" + roomId, authToken);
+};
+
 export default {
   postAuthCode,
   getUser,
@@ -91,4 +95,5 @@ export default {
   joinRoom,
   getHost,
   quitRoom,
+  kickFromRoom,
 };
