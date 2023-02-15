@@ -2,12 +2,14 @@ import { useState, useEffect } from "react";
 import server from "../utils/server";
 import Avatar from "boring-avatars";
 import "./WaitingRoomHost.css";
+import { useNavigate } from "react-router-dom";
 
-function WaitingRoomHost() {
+function WaitingRoomPlayer() {
   const [roomId, setRoomId] = useState("");
   const [user, setUser] = useState({});
   const [players, setPlayers] = useState();
-  const [host, getHost] = useState("");
+  const [host, setHost] = useState("");
+  const navigate = useNavigate();
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(roomId);
@@ -20,8 +22,15 @@ function WaitingRoomHost() {
         roomId
       );
       setPlayers(res.players);
-      console.log(res.players);
     }
+  };
+
+  const quitGame = async () => {
+    const res = await server.quitRoom(
+      localStorage.getItem("authToken"),
+      roomId
+    );
+    navigate("/");
   };
 
   useEffect(() => {
@@ -37,7 +46,23 @@ function WaitingRoomHost() {
   }, []);
 
   useEffect(() => {
-    const intervalId = setInterval(updatePlayers, 2000);
+    let intervalId;
+    if (roomId) {
+      intervalId = setInterval(updatePlayers, 1000);
+      const getHost = async () => {
+        const res = await server.getHost(
+          localStorage.getItem("authToken"),
+          roomId
+        );
+        console.log(res);
+        setHost({
+          displayName: res.spotify_display_name,
+          userId: res.host_user_id,
+        });
+      };
+      getHost(roomId);
+    }
+
     return () => {
       clearInterval(intervalId);
     };
@@ -49,7 +74,7 @@ function WaitingRoomHost() {
 
   return (
     <div className="WaitingRoomHost">
-      <h2>Les joueurs peuvent rejoindre la partie</h2>
+      <h2>Bienvenue dans la partie de {host.displayName}</h2>
       <h3>Joueurs dans la partie : </h3>
 
       {players &&
@@ -66,7 +91,6 @@ function WaitingRoomHost() {
             </p>
           );
         })}
-
       <div className="roomId">
         <h3>Code de la partie :</h3>
         <button className="tooltip" onClick={copyToClipboard}>
@@ -74,8 +98,13 @@ function WaitingRoomHost() {
           <p className="tooltiptext">Copier</p>
         </button>
       </div>
+      <br />
+      <br />
+      <button className="redButton" onClick={quitGame}>
+        Quitter la partie
+      </button>
     </div>
   );
 }
 
-export default WaitingRoomHost;
+export default WaitingRoomPlayer;

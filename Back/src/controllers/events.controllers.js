@@ -58,6 +58,7 @@ async function getPlayersInRoom(ctx) {
     ctx.status = 401;
   }
 }
+
 async function joinRoom(ctx) {
   const authToken = ctx.header.authorization.split(" ")[1];
   const user = (await sql.userFromAuthToken(authToken))[0];
@@ -76,6 +77,37 @@ async function joinRoom(ctx) {
   }
 }
 
+async function getHost(ctx) {
+  const authToken = ctx.header.authorization.split(" ")[1];
+  const user = (await sql.userFromAuthToken(authToken))[0];
+  if (user) {
+    const res = await sql.getHost(ctx.params.roomId);
+    ctx.body = res[0];
+    ctx.status = 200;
+  } else {
+    ctx.body = "Authentification failed";
+    ctx.status = 401;
+  }
+}
+
+async function quitRoom(ctx) {
+  const authToken = ctx.header.authorization.split(" ")[1];
+  const user = (await sql.userFromAuthToken(authToken))[0];
+  if (user) {
+    const res = await sql.quitRoom(ctx.params.roomId, user.spotify_user_id);
+    if (res) {
+      ctx.body = res;
+      ctx.status = 200;
+    } else {
+      ctx.body = res;
+      ctx.status = 404;
+    }
+  } else {
+    ctx.body = "Authentification failed";
+    ctx.status = 401;
+  }
+}
+
 module.exports = {
   getAuthURL,
   addUser,
@@ -83,4 +115,6 @@ module.exports = {
   createRoom,
   getPlayersInRoom,
   joinRoom,
+  getHost,
+  quitRoom,
 };

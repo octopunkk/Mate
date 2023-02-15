@@ -66,9 +66,21 @@ const getPlayersInRoom = async (authToken, roomId) => {
     return 0;
   }
 };
+const getHost = async (authToken, roomId) => {
+  try {
+    const response = await getData("host/" + roomId, authToken);
+    return response;
+  } catch {
+    return 0;
+  }
+};
 
 const joinRoom = async (authToken, roomId) => {
   return await postData({}, "join/" + roomId, authToken);
+};
+
+const quitRoom = async (authToken, roomId) => {
+  return await postData({}, "quit/" + roomId, authToken);
 };
 
 export default {
@@ -77,4 +89,6 @@ export default {
   createRoom,
   getPlayersInRoom,
   joinRoom,
+  getHost,
+  quitRoom,
 };

@@ -19,7 +19,6 @@ function WaitingRoomHost() {
         roomId
       );
       setPlayers(res.players);
-      console.log(res.players);
     }
   };
 
@@ -40,7 +39,7 @@ function WaitingRoomHost() {
   }, []);
 
   useEffect(() => {
-    const intervalId = setInterval(updatePlayers, 2000);
+    const intervalId = setInterval(updatePlayers, 1000);
     return () => {
       clearInterval(intervalId);
     };

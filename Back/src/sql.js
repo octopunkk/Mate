@@ -109,6 +109,15 @@ async function getRoomFromId(room_id) {
   return q;
 }
 
+async function getHost(room_id) {
+  const q = await db`
+  SELECT spotify_display_name, host_player_id FROM rooms
+  JOIN users ON spotify_user_id = host_player_id
+  WHERE room_id = ${room_id}
+`;
+  return q;
+}
+
 async function getPlayersFromRoom(room_id) {
   const q = await db`
   SELECT 
@@ -128,6 +137,13 @@ async function joinRoom(room_id, player_id) {
   }
 }
 
+async function quitRoom(room_id, player_id) {
+  const q = await db`
+  DELETE FROM playersInRooms
+  WHERE room_id = ${room_id} AND player_id = ${player_id}
+`;
+  return q;
+}
 module.exports = {
   upsertUser,
   displayUsers,
@@ -139,4 +155,6 @@ module.exports = {
   addPlayerToRoom,
   getPlayersFromRoom,
   joinRoom,
+  getHost,
+  quitRoom,
 };
