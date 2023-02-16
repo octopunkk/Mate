@@ -22,6 +22,14 @@ function WaitingRoomPlayer() {
         roomId
       );
       setPlayers(res.players);
+      if (
+        res.players &&
+        user.userId &&
+        !res.players.some((e) => e.spotify_user_id === user.userId)
+      ) {
+        console.log(res.players, user);
+        navigate("/");
+      }
     }
   };
 
