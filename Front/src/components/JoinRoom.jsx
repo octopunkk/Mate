@@ -28,6 +28,19 @@ function JoinRoom() {
       });
     }
   };
+  const keyHandler = (event) => {
+    if (event.key === "Enter") {
+      join();
+      return;
+    }
+  };
+  useEffect(() => {
+    document.addEventListener("keydown", keyHandler, false);
+
+    return () => {
+      document.removeEventListener("keydown", keyHandler, false);
+    };
+  });
 
   return (
     <div>
@@ -37,6 +50,7 @@ function JoinRoom() {
         {errMessage.err}
       </h4>
       <input
+        autoFocus
         value={roomCode}
         maxLength="5"
         onChange={(e) => {
