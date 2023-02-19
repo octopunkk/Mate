@@ -87,6 +87,10 @@ const kickFromRoom = async (authToken, roomId, playerId) => {
   return await postData({ player_id: playerId }, "kick/" + roomId, authToken);
 };
 
+const getPlaylist = async (authToken, roomId) => {
+  return await getData("playlist/" + roomId, authToken);
+};
+
 export default {
   postAuthCode,
   getUser,
@@ -96,4 +100,5 @@ export default {
   getHost,
   quitRoom,
   kickFromRoom,
+  getPlaylist,
 };

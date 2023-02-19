@@ -3,6 +3,7 @@ import server from "../utils/server";
 import Avatar from "boring-avatars";
 import "./WaitingRoomHost.css";
 import { useNavigate } from "react-router-dom";
+import CircularProgress from "@mui/material/CircularProgress";
 
 function WaitingRoomPlayer() {
   const [roomId, setRoomId] = useState("");
@@ -13,24 +14,6 @@ function WaitingRoomPlayer() {
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(roomId);
-  };
-
-  const updatePlayers = async () => {
-    if (roomId) {
-      const res = await server.getPlayersInRoom(
-        localStorage.getItem("authToken"),
-        roomId
-      );
-      setPlayers(res.players);
-      if (
-        res.players &&
-        user.userId &&
-        !res.players.some((e) => e.spotify_user_id === user.userId)
-      ) {
-        console.log(res.players, user);
-        navigate("/");
-      }
-    }
   };
 
   const quitGame = async () => {
@@ -56,7 +39,24 @@ function WaitingRoomPlayer() {
   useEffect(() => {
     let intervalId;
     if (roomId) {
-      intervalId = setInterval(updatePlayers, 1000);
+      intervalId = setInterval(async () => {
+        if (roomId) {
+          const res = await server.getPlayersInRoom(
+            localStorage.getItem("authToken"),
+            roomId
+          );
+          setPlayers(res.players);
+          console.log(user.userId);
+          if (
+            res.players &&
+            user.userId &&
+            !res.players.some((e) => e.spotify_user_id === user.userId)
+          ) {
+            console.log(res.players, user);
+            navigate("/");
+          }
+        }
+      }, 1000);
       const getHost = async () => {
         const res = await server.getHost(
           localStorage.getItem("authToken"),
@@ -64,7 +64,7 @@ function WaitingRoomPlayer() {
         );
         setHost({
           displayName: res.spotify_display_name,
-          userId: res.host_user_id,
+          userId: res.host_player_id,
         });
       };
       getHost(roomId);
@@ -73,7 +73,11 @@ function WaitingRoomPlayer() {
     return () => {
       clearInterval(intervalId);
     };
-  }, [roomId]);
+  }, [roomId, user]);
+
+  if (host.userId && user.userId && host.userId === user.userId) {
+    navigate("/waitingRoomHost");
+  }
 
   useEffect(() => {
     setRoomId(window.location.pathname.match(/waitingRoom\/([A-Z]+)/)[1]);
@@ -84,7 +88,7 @@ function WaitingRoomPlayer() {
       <h2>Bienvenue dans la partie de {host.displayName}</h2>
       <h3>Joueurs dans la partie : </h3>
 
-      {players &&
+      {players ? (
         players.map((player) => {
           return (
             <p className="player" key={player.spotify_user_id}>
@@ -97,7 +101,10 @@ function WaitingRoomPlayer() {
               {player.spotify_display_name}
             </p>
           );
-        })}
+        })
+      ) : (
+        <CircularProgress />
+      )}
       <div className="roomId">
         <h3>Code de la partie :</h3>
         <button className="tooltip" onClick={copyToClipboard}>

@@ -47,6 +47,31 @@ async function createUserSpotifyApi(userTokens) {
   });
 }
 
+async function getUserTopTracks(userTokens, userId) {
+  let userSpotifyApi = await createUserSpotifyApi(userTokens);
+
+  const newExpireDate = await refreshSpotifyToken(
+    userSpotifyApi,
+    userTokens.expire_date
+  );
+  if (newExpireDate) {
+    userTokens.expire_date = newExpireDate;
+    sql.refreshToken(userId, userSpotifyApi.getAccessToken(), newExpireDate);
+  }
+
+  const topTracks = await userSpotifyApi.getMyTopTracks();
+  return topTracks.body.items.map((track) => {
+    return {
+      name: track.name,
+      album: track.album.name,
+      artist: track.artists[0].name,
+      id: track.id,
+      cover: track.album.images[0].url,
+      preview: track.preview_url,
+    };
+  });
+}
+
 async function getUserData(userTokens) {
   let userSpotifyApi = await createUserSpotifyApi(userTokens);
   const newExpireDate = await refreshSpotifyToken(
@@ -74,4 +99,40 @@ async function getUserData(userTokens) {
   return user[0];
 }
 
-module.exports = { authorizeURL, getUserTokens, getUserData };
+async function getRecommendations(userTokens, userId, ids) {
+  let userSpotifyApi = await createUserSpotifyApi(userTokens);
+
+  const newExpireDate = await refreshSpotifyToken(
+    userSpotifyApi,
+    userTokens.expire_date
+  );
+  if (newExpireDate) {
+    userTokens.expire_date = newExpireDate;
+    sql.refreshToken(userId, userSpotifyApi.getAccessToken(), newExpireDate);
+  }
+
+  const reco = await userSpotifyApi.getRecommendations({
+    seed_tracks: ids,
+    min_popularity: 70,
+    limit: 10,
+    market: "FR",
+  });
+  return reco.body.tracks.map((track) => {
+    return {
+      name: track.name,
+      album: track.album.name,
+      artist: track.artists[0].name,
+      id: track.id,
+      cover: track.album.images[0].url,
+      preview: track.preview_url,
+    };
+  });
+}
+
+module.exports = {
+  authorizeURL,
+  getUserTokens,
+  getUserData,
+  getUserTopTracks,
+  getRecommendations,
+};

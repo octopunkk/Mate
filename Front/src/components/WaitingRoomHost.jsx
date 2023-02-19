@@ -3,11 +3,14 @@ import server from "../utils/server";
 import Avatar from "boring-avatars";
 import "./WaitingRoomHost.css";
 import PersonRemoveIcon from "@mui/icons-material/PersonRemove";
+import { useNavigate } from "react-router-dom";
+import CircularProgress from "@mui/material/CircularProgress";
 
 function WaitingRoomHost() {
   const [roomId, setRoomId] = useState("");
   const [user, setUser] = useState({});
   const [players, setPlayers] = useState();
+  const navigate = useNavigate();
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(roomId);
@@ -51,7 +54,7 @@ function WaitingRoomHost() {
       <h2>Les joueurs peuvent rejoindre la partie</h2>
       <h3>Joueurs dans la partie : </h3>
 
-      {players &&
+      {players ? (
         players.map((player) => {
           return (
             <p className="player" key={player.spotify_user_id}>
@@ -79,7 +82,10 @@ function WaitingRoomHost() {
               )}
             </p>
           );
-        })}
+        })
+      ) : (
+        <CircularProgress />
+      )}
 
       <div className="roomId">
         <h3>Code de la partie :</h3>
@@ -88,6 +94,12 @@ function WaitingRoomHost() {
           <p className="tooltiptext">Copier</p>
         </button>
       </div>
+
+      <br />
+      <br />
+      <button onClick={() => navigate("../start/" + roomId)}>
+        Démarrer la partie
+      </button>
     </div>
   );
 }

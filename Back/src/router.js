@@ -10,6 +10,7 @@ const {
   getHost,
   quitRoom,
   kickFromRoom,
+  getPlaylist,
 } = require("./controllers/events.controllers");
 
 router.get("/get_auth_url", getAuthURL);
@@ -26,4 +27,6 @@ router.post("/join/:roomId", joinRoom);
 
 router.post("/quit/:roomId", quitRoom);
 router.post("/kick/:roomId", kickFromRoom);
+
+router.get("/playlist/:roomId", getPlaylist);
 module.exports = router;

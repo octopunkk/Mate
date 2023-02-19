@@ -135,6 +135,52 @@ async function kickFromRoom(ctx) {
   }
 }
 
+async function getPlaylist(ctx) {
+  const authToken = ctx.header.authorization.split(" ")[1];
+  const user = (await sql.userFromAuthToken(authToken))[0];
+  // check for correct authentication
+  if (user) {
+    const players = (await sql.getPlayersFromRoom(ctx.params.roomId))[0]
+      .players;
+    let playlist = [];
+    // get top tracks ids for all players in the room
+    await Promise.all(
+      players.map(async (player) => {
+        const topTracks = [];
+
+        const playerTokens = (await sql.userFromId(player.spotify_user_id))[0];
+        const playerTopTracks = await Spotify.getUserTopTracks(
+          {
+            access_token: playerTokens.spotify_auth_token,
+            refresh_token: playerTokens.spotify_refresh_token,
+            expire_date: playerTokens.spotify_expires_at,
+          },
+          player.spotify_user_id
+        );
+        playerTopTracks.forEach((track) => topTracks.push(track.id));
+        playlist.push(playerTopTracks.slice(0, 3));
+        // get recommendations based on these ids
+
+        const recommendations = await Spotify.getRecommendations(
+          {
+            access_token: playerTokens.spotify_auth_token,
+            refresh_token: playerTokens.spotify_refresh_token,
+            expire_date: playerTokens.spotify_expires_at,
+          },
+          player.spotify_user_id,
+          topTracks.slice(0, 5)
+        );
+        playlist.push(recommendations);
+      })
+    );
+    ctx.body = playlist.flat();
+    ctx.status = 200;
+  } else {
+    ctx.body = "Authentification failed";
+    ctx.status = 401;
+  }
+}
+
 module.exports = {
   getAuthURL,
   addUser,
@@ -145,4 +191,5 @@ module.exports = {
   getHost,
   quitRoom,
   kickFromRoom,
+  getPlaylist,
 };

@@ -5,6 +5,7 @@ import Welcome from "./components/Welcome";
 import WaitingRoomHost from "./components/WaitingRoomHost";
 import WaitingRoomPlayer from "./components/WaitingRoomPlayer";
 import JoinRoom from "./components/JoinRoom";
+import StartGame from "./components/StartGame";
 import "./index.css";
 import {
   createBrowserRouter,
@@ -33,6 +34,10 @@ const router = createBrowserRouter([
   {
     path: "/joinRoom",
     element: <JoinRoom />,
+  },
+  {
+    path: "/start/:roomId",
+    element: <StartGame />,
   },
 ]);
 
