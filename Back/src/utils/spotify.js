@@ -101,7 +101,6 @@ async function getUserData(userTokens) {
 
 async function getRecommendations(userTokens, userId, ids) {
   let userSpotifyApi = await createUserSpotifyApi(userTokens);
-
   const newExpireDate = await refreshSpotifyToken(
     userSpotifyApi,
     userTokens.expire_date
@@ -117,16 +116,19 @@ async function getRecommendations(userTokens, userId, ids) {
     limit: 10,
     market: "FR",
   });
-  return reco.body.tracks.map((track) => {
-    return {
-      name: track.name,
-      album: track.album.name,
-      artist: track.artists[0].name,
-      id: track.id,
-      cover: track.album.images[0].url,
-      preview: track.preview_url,
-    };
-  });
+
+  return reco.body.tracks
+    .map((track) => {
+      return {
+        name: track.name,
+        album: track.album.name,
+        artist: track.artists[0].name,
+        id: track.id,
+        cover: track.album.images[0].url,
+        preview: track.preview_url,
+      };
+    })
+    .filter((track) => !!track.preview);
 }
 
 module.exports = {

@@ -1,23 +1,24 @@
 import CircularProgress from "@mui/material/CircularProgress";
 import { useState, useEffect } from "react";
 import server from "../utils/server";
-import utils from "../utils/utils";
 import Track from "./Track";
+import { useNavigate } from "react-router-dom";
 
 function StartGame() {
   const [roomId, setRoomId] = useState("");
   const [playlist, setPlaylist] = useState([]);
   const [playlistIdx, setPlaylistIdx] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
-
-  console.log({ playlistIdx });
+  const [gameHasEnded, setGameHasEnded] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const getPlaylist = async () => {
       if (roomId) {
-        const tracks = (
-          await server.getPlaylist(localStorage.getItem("authToken"), roomId)
-        ).sort(() => 0.5 - Math.random());
+        const tracks = await server.getPlaylist(
+          localStorage.getItem("authToken"),
+          roomId
+        );
         setPlaylist(tracks);
       }
     };
@@ -29,21 +30,35 @@ function StartGame() {
   }, [window.location]);
   return (
     <div>
-      {playlist[0] ? (
+      {gameHasEnded ? (
         <div>
-          <Track
-            track={playlist[playlistIdx]}
-            setPlaylistIdx={setPlaylistIdx}
-            isPlaying={isPlaying}
-            setIsPlaying={setIsPlaying}
-          />
+          <h2>La partie est terminée !</h2>
+          <button onClick={() => navigate("../waitingRoomHost")}>
+            Retour a l'écran de lancement
+          </button>
         </div>
       ) : (
         <div>
-          <h1>Création de la playlist</h1>
-          <div>
-            <CircularProgress />
-          </div>
+          {playlist[0] ? (
+            <div>
+              <Track
+                track={playlist[playlistIdx]}
+                setPlaylistIdx={setPlaylistIdx}
+                playlistIdx={playlistIdx}
+                isPlaying={isPlaying}
+                setIsPlaying={setIsPlaying}
+                maxLength={playlist.length}
+                setGameHasEnded={setGameHasEnded}
+              />
+            </div>
+          ) : (
+            <div>
+              <h1>Création de la playlist</h1>
+              <div>
+                <CircularProgress />
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>

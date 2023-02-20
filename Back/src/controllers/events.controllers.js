@@ -158,9 +158,10 @@ async function getPlaylist(ctx) {
           player.spotify_user_id
         );
         playerTopTracks.forEach((track) => topTracks.push(track.id));
-        playlist.push(playerTopTracks.slice(0, 3));
+        playlist.push(
+          playerTopTracks.filter((track) => !!track.preview).slice(0, 3)
+        );
         // get recommendations based on these ids
-
         const recommendations = await Spotify.getRecommendations(
           {
             access_token: playerTokens.spotify_auth_token,
@@ -173,7 +174,7 @@ async function getPlaylist(ctx) {
         playlist.push(recommendations);
       })
     );
-    ctx.body = playlist.flat();
+    ctx.body = playlist.flat().sort(() => 0.5 - Math.random());
     ctx.status = 200;
   } else {
     ctx.body = "Authentification failed";
