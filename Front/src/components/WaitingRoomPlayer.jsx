@@ -53,7 +53,7 @@ function WaitingRoomPlayer() {
           if (
             res &&
             user.userId &&
-            !res.some((e) => e.spotify_user_id === user.userId)
+            !res.players.some((e) => e.spotify_user_id === user.userId)
           ) {
             navigate("/");
           }

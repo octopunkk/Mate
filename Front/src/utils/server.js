@@ -16,6 +16,7 @@ const postData = async (data, endpoint, authToken) => {
   if (response.ok) {
     return await response.json();
   } else {
+    console.log(response.statusText);
     throw new Error(response.statusText);
   }
 };
@@ -98,7 +99,7 @@ const quitRoom = async (authToken, roomId) => {
 const kickFromRoom = async (authToken, roomId, playerId) => {
   return await deleteData(
     {},
-    "room/" + roomId + "/players" + playerId,
+    "room/" + roomId + "/players/" + playerId,
     authToken
   );
 };

@@ -82,15 +82,21 @@ async function getPlaylist(ctx) {
       const playerTopTracks = await Spotify.getUserTopTracks(playerData);
       const recommendations = await Spotify.getRecommendations(
         playerData,
-        playerTopTracks.map((track) => track.id).slice(0, 5)
+        playerTopTracks
+          .map((track) => track.id)
+          .sort(() => 0.5 - Math.random())
+          .slice(0, 5)
       );
       return [
-        ...playerTopTracks.filter((track) => !!track.preview).slice(0, 3),
+        ...playerTopTracks
+          .filter((track) => !!track.preview)
+          .sort(() => 0.5 - Math.random())
+          .slice(0, 3),
         ...recommendations,
       ];
     })
   );
-  ctx.body = tracks.flat().sort(() => 0.5 - Math.random());
+  ctx.body = [...new Set(tracks.flat().sort(() => 0.5 - Math.random()))];
   ctx.status = 200;
 }
 

@@ -79,6 +79,18 @@ async function getUserTopTracks(userData) {
   });
 }
 
+async function getUserTopArtists(userData) {
+  const userTokens = {
+    access_token: userData.spotify_auth_token,
+    refresh_token: userData.spotify_refresh_token,
+    expire_date: userData.spotify_expires_at,
+  };
+  const userId = userData.spotify_user_id;
+  const userSpotifyApi = await createUserSpotifyApi(userTokens, userId);
+  const topArtists = await userSpotifyApi.getMyTopArtists({ limit: 10 });
+  return topArtists.body.items.map((e) => e.id);
+}
+
 async function getUserData(userTokens) {
   const userSpotifyApi = await createUserSpotifyApi(userTokens, null);
   const newExpireDate = await refreshSpotifyToken(
@@ -114,14 +126,21 @@ async function getRecommendations(userData, ids) {
   };
   const userId = userData.spotify_user_id;
   const userSpotifyApi = await createUserSpotifyApi(userTokens, userId);
-  const reco = await userSpotifyApi.getRecommendations({
+  const recoTracks = await userSpotifyApi.getRecommendations({
     seed_tracks: ids,
     min_popularity: 70,
     limit: 10,
     market: "FR",
   });
-
-  return reco.body.tracks
+  const topArtists = await getUserTopArtists(userData);
+  const recoArtists = await userSpotifyApi.getRecommendations({
+    seed_artists: topArtists.sort(() => 0.5 - Math.random()).slice(0, 5),
+    min_popularity: 70,
+    limit: 10,
+    market: "FR",
+  });
+  const reco = [...recoArtists.body.tracks, ...recoTracks.body.tracks];
+  return reco
     .map((track) => {
       return {
         name: track.name,
@@ -141,4 +160,5 @@ module.exports = {
   getUserData,
   getUserTopTracks,
   getRecommendations,
+  getUserTopArtists,
 };
