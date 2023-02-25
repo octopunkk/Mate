@@ -10,9 +10,10 @@ function JoinRoom() {
   const join = async () => {
     if (roomCode.length == 5) {
       try {
-        const room = (
-          await server.joinRoom(localStorage.getItem("authToken"), roomCode)
-        )[0];
+        const room = await server.joinRoom(
+          localStorage.getItem("authToken"),
+          roomCode
+        );
         navigate("../waitingRoom/" + room.room_id);
       } catch (e) {
         console.error(e);

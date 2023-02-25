@@ -34,6 +34,26 @@ const getData = async (endpoint, authToken) => {
   return await response.json();
 };
 
+const deleteData = async (data, endpoint, authToken) => {
+  const response = await fetch(URL + endpoint, {
+    method: "DELETE",
+    mode: "cors",
+    credentials: "same-origin",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + authToken,
+    },
+
+    cache: "default",
+    body: JSON.stringify(data),
+  });
+  if (response.ok) {
+    return await response.json();
+  } else {
+    throw new Error(response.statusText);
+  }
+};
+
 const postAuthCode = async (authCode) => {
   const response = await postData({ authCode }, "user");
   localStorage.setItem("authToken", response.auth_token);
@@ -42,7 +62,7 @@ const postAuthCode = async (authCode) => {
 
 const getUser = async (authToken) => {
   try {
-    const response = await getData("user", authToken);
+    const response = await getData("user/me", authToken);
     return response;
   } catch {
     return 0;
@@ -51,7 +71,7 @@ const getUser = async (authToken) => {
 
 const createRoom = async (authToken) => {
   try {
-    const response = await postData({}, "createRoom", authToken);
+    const response = await postData({}, "room", authToken);
     return response;
   } catch {
     return 0;
@@ -60,7 +80,7 @@ const createRoom = async (authToken) => {
 
 const getPlayersInRoom = async (authToken, roomId) => {
   try {
-    const response = await getData("getPlayersInRoom/" + roomId, authToken);
+    const response = await getData("room/" + roomId, authToken);
     return response;
   } catch {
     return 0;
@@ -68,7 +88,7 @@ const getPlayersInRoom = async (authToken, roomId) => {
 };
 const getHost = async (authToken, roomId) => {
   try {
-    const response = await getData("host/" + roomId, authToken);
+    const response = await getData("room/" + roomId + "/host", authToken);
     return response;
   } catch {
     return 0;
@@ -76,19 +96,23 @@ const getHost = async (authToken, roomId) => {
 };
 
 const joinRoom = async (authToken, roomId) => {
-  return await postData({}, "join/" + roomId, authToken);
+  return await postData({}, "room/" + roomId + "/join", authToken);
 };
 
 const quitRoom = async (authToken, roomId) => {
-  return await postData({}, "quit/" + roomId, authToken);
+  return await postData({}, "room/" + roomId + "/quit", authToken);
 };
 
 const kickFromRoom = async (authToken, roomId, playerId) => {
-  return await postData({ player_id: playerId }, "kick/" + roomId, authToken);
+  return await deleteData(
+    {},
+    "room/" + roomId + "/players" + playerId,
+    authToken
+  );
 };
 
 const getPlaylist = async (authToken, roomId) => {
-  return await getData("playlist/" + roomId, authToken);
+  return await getData("room/" + roomId + "/playlist", authToken);
 };
 
 export default {

@@ -23,13 +23,20 @@ async function getUserTokens(code) {
   };
 }
 
-async function refreshSpotifyToken(userSpotifyApi, expire_date) {
-  let newExpireDate = false;
+async function refreshSpotifyToken(userSpotifyApi, expire_date, userId) {
+  let newExpireDate = expire_date;
   try {
-    if (!expire_date || Date.now() > Date.parse(expire_date)) {
+    if (!expire_date || Date.now() > Date.parse(expire_date) + 60000) {
       const data = await userSpotifyApi.refreshAccessToken();
       userSpotifyApi.setAccessToken(data.body["access_token"]);
       newExpireDate = utils.getExpireDate(data.body["expires_in"]);
+      if (userId) {
+        await sql.refreshToken({
+          spotify_user_id: userId,
+          spotify_auth_token: userSpotifyApi.getAccessToken(),
+          spotify_expires_at: newExpireDate,
+        });
+      }
     }
   } catch (err) {
     console.log("Could not refresh access token", err);
@@ -37,28 +44,28 @@ async function refreshSpotifyToken(userSpotifyApi, expire_date) {
   return newExpireDate;
 }
 
-async function createUserSpotifyApi(userTokens) {
-  return new SpotifyWebApi({
+async function createUserSpotifyApi(userTokens, userId) {
+  const userSpotifyApi = new SpotifyWebApi({
     clientId: process.env.SPOTIFY_CLIENT_ID,
     clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
     redirectUri: process.env.SPOTIFY_REDIRECT_URI,
     accessToken: userTokens.access_token,
     refreshToken: userTokens.refresh_token,
   });
+  if (userId) {
+    await refreshSpotifyToken(userSpotifyApi, userTokens.expire_date, userId);
+  }
+  return userSpotifyApi;
 }
 
-async function getUserTopTracks(userTokens, userId) {
-  let userSpotifyApi = await createUserSpotifyApi(userTokens);
-
-  const newExpireDate = await refreshSpotifyToken(
-    userSpotifyApi,
-    userTokens.expire_date
-  );
-  if (newExpireDate) {
-    userTokens.expire_date = newExpireDate;
-    sql.refreshToken(userId, userSpotifyApi.getAccessToken(), newExpireDate);
-  }
-
+async function getUserTopTracks(userData) {
+  const userTokens = {
+    access_token: userData.spotify_auth_token,
+    refresh_token: userData.spotify_refresh_token,
+    expire_date: userData.spotify_expires_at,
+  };
+  const userId = userData.spotify_user_id;
+  const userSpotifyApi = await createUserSpotifyApi(userTokens, userId);
   const topTracks = await userSpotifyApi.getMyTopTracks();
   return topTracks.body.items.map((track) => {
     return {
@@ -73,7 +80,7 @@ async function getUserTopTracks(userTokens, userId) {
 }
 
 async function getUserData(userTokens) {
-  let userSpotifyApi = await createUserSpotifyApi(userTokens);
+  const userSpotifyApi = await createUserSpotifyApi(userTokens, null);
   const newExpireDate = await refreshSpotifyToken(
     userSpotifyApi,
     userTokens.expire_date
@@ -81,11 +88,11 @@ async function getUserData(userTokens) {
   const userData = await userSpotifyApi.getMe();
   if (newExpireDate) {
     userTokens.expire_date = newExpireDate;
-    sql.refreshToken(
-      userData.body.id,
-      userSpotifyApi.getAccessToken(),
-      newExpireDate
-    );
+    await sql.refreshToken({
+      spotify_user_id: userData.body.id,
+      spotify_auth_token: userSpotifyApi.getAccessToken(),
+      spotify_expires_at: newExpireDate,
+    });
   }
   let user = {
     spotify_user_id: userData.body.id,
@@ -99,17 +106,14 @@ async function getUserData(userTokens) {
   return user[0];
 }
 
-async function getRecommendations(userTokens, userId, ids) {
-  let userSpotifyApi = await createUserSpotifyApi(userTokens);
-  const newExpireDate = await refreshSpotifyToken(
-    userSpotifyApi,
-    userTokens.expire_date
-  );
-  if (newExpireDate) {
-    userTokens.expire_date = newExpireDate;
-    sql.refreshToken(userId, userSpotifyApi.getAccessToken(), newExpireDate);
-  }
-
+async function getRecommendations(userData, ids) {
+  const userTokens = {
+    access_token: userData.spotify_auth_token,
+    refresh_token: userData.spotify_refresh_token,
+    expire_date: userData.spotify_expires_at,
+  };
+  const userId = userData.spotify_user_id;
+  const userSpotifyApi = await createUserSpotifyApi(userTokens, userId);
   const reco = await userSpotifyApi.getRecommendations({
     seed_tracks: ids,
     min_popularity: 70,

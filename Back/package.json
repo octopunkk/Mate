@@ -3,8 +3,8 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "start": "dotenv npm run migrate up && dotenv node src/mateBack.js",
-    "dev": "dotenv -c -- npm run migrate up && dotenv -c -- nodemon src/mateBack.js",
+    "start": "dotenv npm run migrate up && dotenv node src/index.js",
+    "dev": "dotenv -c -- npm run migrate up && dotenv -c -- nodemon src/index.js",
     "down": "dotenv -c -- npm run migrate down",
     "migrate": "ley"
   },

@@ -1,5 +1,4 @@
 const Router = require("koa-router");
-const router = new Router();
 const {
   getAuthURL,
   addUser,
@@ -13,20 +12,33 @@ const {
   getPlaylist,
 } = require("./controllers/events.controllers");
 
+const router = new Router();
+
+const requiresAuthUser = (ctx, next) => {
+  if (!ctx.user) {
+    ctx.body = "Authentification failed";
+    ctx.status = 401;
+
+    return;
+  }
+
+  return next();
+};
+
 router.get("/get_auth_url", getAuthURL);
 
 router.post("/user", addUser);
-router.get("/user", getUser);
+router.get("/user/me", requiresAuthUser, getUser);
 
-router.post("/createRoom", createRoom);
+router.post("/room", requiresAuthUser, createRoom);
 
-router.get("/getPlayersInRoom/:roomId", getPlayersInRoom);
-router.get("/host/:roomId", getHost);
+router.get("/room/:id", requiresAuthUser, getPlayersInRoom);
+router.get("/room/:id/host", requiresAuthUser, getHost);
 
-router.post("/join/:roomId", joinRoom);
+router.post("/room/:id/join", requiresAuthUser, joinRoom);
 
-router.post("/quit/:roomId", quitRoom);
-router.post("/kick/:roomId", kickFromRoom);
+router.post("/room/:id/quit", requiresAuthUser, quitRoom);
+router.delete("/room/:id/players/:playerId", requiresAuthUser, kickFromRoom);
 
-router.get("/playlist/:roomId", getPlaylist);
+router.get("/room/:id/playlist", requiresAuthUser, getPlaylist);
 module.exports = router;

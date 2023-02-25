@@ -1,9 +1,8 @@
 exports.up = async function (DB) {
   await DB`
     CREATE TABLE rooms (
-      room_id text PRIMARY KEY,
-      host_player_id text REFERENCES users (spotify_user_id),
-      playlist text[]
+      id text PRIMARY KEY,
+      host_player_id text NOT NULL REFERENCES users (spotify_user_id)
     )
   `;
 };

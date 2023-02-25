@@ -45,14 +45,12 @@ function WaitingRoomPlayer() {
             localStorage.getItem("authToken"),
             roomId
           );
-          setPlayers(res.players);
-          console.log(user.userId);
+          setPlayers(res);
           if (
-            res.players &&
+            res &&
             user.userId &&
-            !res.players.some((e) => e.spotify_user_id === user.userId)
+            !res.some((e) => e.spotify_user_id === user.userId)
           ) {
-            console.log(res.players, user);
             navigate("/");
           }
         }

@@ -22,7 +22,7 @@ function WaitingRoomHost() {
         localStorage.getItem("authToken"),
         roomId
       );
-      setPlayers(res.players);
+      setPlayers(res);
     }
   };
 
@@ -36,7 +36,8 @@ function WaitingRoomHost() {
     };
     const createRoom = async () => {
       const res = await server.createRoom(localStorage.getItem("authToken"));
-      setRoomId(res.roomId);
+      console.log(res);
+      setRoomId(res.id);
     };
     getUser();
     createRoom();
