@@ -78,17 +78,9 @@ const createRoom = async (authToken) => {
   }
 };
 
-const getPlayersInRoom = async (authToken, roomId) => {
+const getRoomInfo = async (authToken, roomId) => {
   try {
     const response = await getData("room/" + roomId, authToken);
-    return response;
-  } catch {
-    return 0;
-  }
-};
-const getHost = async (authToken, roomId) => {
-  try {
-    const response = await getData("room/" + roomId + "/host", authToken);
     return response;
   } catch {
     return 0;
@@ -119,9 +111,8 @@ export default {
   postAuthCode,
   getUser,
   createRoom,
-  getPlayersInRoom,
+  getRoomInfo,
   joinRoom,
-  getHost,
   quitRoom,
   kickFromRoom,
   getPlaylist,

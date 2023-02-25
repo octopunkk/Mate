@@ -4,9 +4,8 @@ const {
   addUser,
   getUser,
   createRoom,
-  getPlayersInRoom,
   joinRoom,
-  getHost,
+  getRoomInfo,
   quitRoom,
   kickFromRoom,
   getPlaylist,
@@ -18,10 +17,8 @@ const requiresAuthUser = (ctx, next) => {
   if (!ctx.user) {
     ctx.body = "Authentification failed";
     ctx.status = 401;
-
     return;
   }
-
   return next();
 };
 
@@ -32,8 +29,7 @@ router.get("/user/me", requiresAuthUser, getUser);
 
 router.post("/room", requiresAuthUser, createRoom);
 
-router.get("/room/:id", requiresAuthUser, getPlayersInRoom);
-router.get("/room/:id/host", requiresAuthUser, getHost);
+router.get("/room/:id", requiresAuthUser, getRoomInfo);
 
 router.post("/room/:id/join", requiresAuthUser, joinRoom);
 

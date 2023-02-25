@@ -29,9 +29,10 @@ async function createRoom(ctx) {
   ctx.status = 201;
 }
 
-async function getPlayersInRoom(ctx) {
-  const res = await sql.getPlayersFromRoom(ctx.params.id);
-  ctx.body = res;
+async function getRoomInfo(ctx) {
+  const players = await sql.getPlayersFromRoom(ctx.params.id);
+  const host = await sql.getHost(ctx.params.id);
+  ctx.body = { players: players, host: host };
   ctx.status = 200;
 }
 
@@ -44,12 +45,6 @@ async function joinRoom(ctx) {
     ctx.body = "Room doesn't exist";
     ctx.status = 404;
   }
-}
-
-async function getHost(ctx) {
-  const res = await sql.getHost(ctx.params.id);
-  ctx.body = res;
-  ctx.status = 200;
 }
 
 async function quitRoom(ctx) {
@@ -104,9 +99,8 @@ module.exports = {
   addUser,
   getUser,
   createRoom,
-  getPlayersInRoom,
   joinRoom,
-  getHost,
+  getRoomInfo,
   quitRoom,
   kickFromRoom,
   getPlaylist,

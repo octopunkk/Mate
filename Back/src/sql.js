@@ -121,7 +121,6 @@ async function getPlayersFromRoom(room_id) {
     INNER JOIN users
     ON host_player_id = spotify_user_id
     WHERE id = ${room_id}
-
   `;
   return q;
 }

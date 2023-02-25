@@ -18,11 +18,11 @@ function WaitingRoomHost() {
 
   const updatePlayers = async () => {
     if (roomId) {
-      const res = await server.getPlayersInRoom(
+      const res = await server.getRoomInfo(
         localStorage.getItem("authToken"),
         roomId
       );
-      setPlayers(res);
+      setPlayers(res.players);
     }
   };
 

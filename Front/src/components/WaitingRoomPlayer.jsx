@@ -41,11 +41,15 @@ function WaitingRoomPlayer() {
     if (roomId) {
       intervalId = setInterval(async () => {
         if (roomId) {
-          const res = await server.getPlayersInRoom(
+          const res = await server.getRoomInfo(
             localStorage.getItem("authToken"),
             roomId
           );
-          setPlayers(res);
+          setPlayers(res.players);
+          setHost({
+            displayName: res.host.spotify_display_name,
+            userId: res.host.host_player_id,
+          });
           if (
             res &&
             user.userId &&
@@ -55,17 +59,6 @@ function WaitingRoomPlayer() {
           }
         }
       }, 1000);
-      const getHost = async () => {
-        const res = await server.getHost(
-          localStorage.getItem("authToken"),
-          roomId
-        );
-        setHost({
-          displayName: res.spotify_display_name,
-          userId: res.host_player_id,
-        });
-      };
-      getHost(roomId);
     }
 
     return () => {
