@@ -1,0 +1,8 @@
+.tracksRecapItem {
+  display: flex;
+  align-items: center;
+}
+.tracksRecapItem--cover {
+  height: 50px;
+  padding: 5px;
+}

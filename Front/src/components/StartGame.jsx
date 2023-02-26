@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import server from "../utils/server";
 import Track from "./Track";
 import { useNavigate } from "react-router-dom";
+import "./StartGame.css";
 
 function StartGame() {
   const [roomId, setRoomId] = useState("");
@@ -36,6 +37,18 @@ function StartGame() {
           <button onClick={() => navigate("../waitingRoomHost")}>
             Retour a l'écran de lancement
           </button>
+          <br />
+          <h3>Liste des titres diffusés</h3>
+          {playlist.map((track) => {
+            return (
+              <div key={track.id} className="tracksRecapItem">
+                <img className="tracksRecapItem--cover" src={track.cover} />
+                <p>
+                  {track.name} - {track.artist}
+                </p>
+              </div>
+            );
+          })}
         </div>
       ) : (
         <div>

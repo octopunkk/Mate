@@ -21,7 +21,7 @@ function Track(props) {
         <div>
           <h3>Tu viens d'écouter</h3>
           <h4>
-            {track.artist} - {track.name}
+            {track.name} - {track.artist}
           </h4>
           <p>de l'album {track.album}</p>
           <img src={track.cover} height="200" />

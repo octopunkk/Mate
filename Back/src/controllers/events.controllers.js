@@ -96,7 +96,13 @@ async function getPlaylist(ctx) {
       ];
     })
   );
-  ctx.body = [...new Set(tracks.flat().sort(() => 0.5 - Math.random()))];
+  let playlist = [];
+  tracks.flat().forEach((track) => {
+    if (!playlist.some((e) => e.id == track.id)) {
+      playlist.push(track);
+    }
+  });
+  ctx.body = playlist.sort(() => 0.5 - Math.random());
   ctx.status = 200;
 }
 
