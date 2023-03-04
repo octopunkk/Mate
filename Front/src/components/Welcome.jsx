@@ -11,8 +11,15 @@ function Welcome() {
     localStorage.clear();
     navigate("/");
   };
-  const goToWaitingRoomHost = () => {
-    navigate("../waitingRoomHost");
+
+  const createRoom = async () => {
+    const res = await server.createRoom(localStorage.getItem("authToken"));
+    return res.id;
+  };
+
+  const goToWaitingRoom = async () => {
+    const roomId = await createRoom();
+    navigate("../waitingRoom/" + roomId);
   };
   const goToJoinRoom = () => {
     navigate("../joinRoom");
@@ -39,7 +46,7 @@ function Welcome() {
         colors={["#F6D76B", "#FF9036", "#D6254D", "#FF5475", "#FDEBA9"]}
       />
       <br /> <br />
-      <button onClick={goToWaitingRoomHost}>Créer une partie</button>
+      <button onClick={goToWaitingRoom}>Créer une partie</button>
       <br /> <br />
       <button onClick={goToJoinRoom}>Rejoindre une partie</button>
       <br /> <br />

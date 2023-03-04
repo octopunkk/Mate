@@ -1,5 +1,6 @@
 const Spotify = require("../utils/spotify");
 const sql = require("../sql");
+const { Unauthorized } = require("../utils/errorMiddleware");
 
 const getAuthURL = (ctx) => {
   ctx.body = { url: Spotify.authorizeURL() };
@@ -74,7 +75,16 @@ async function kickFromRoom(ctx) {
   ctx.status = 200;
 }
 
+const assertIsHost = (ctx, hostId) => {
+  if (hostId !== ctx.user.spotify_user_id) {
+    throw new Unauthorized("is not game host");
+  }
+};
+
 async function getPlaylist(ctx) {
+  const host = await sql.getHost(ctx.params.id);
+  assertIsHost(ctx, host.host_player_id);
+
   const players = await sql.getPlayersFromRoom(ctx.params.id);
   const tracks = await Promise.all(
     players.map(async (player) => {
@@ -96,12 +106,15 @@ async function getPlaylist(ctx) {
       ];
     })
   );
+
+  // TODO : use removeDuplicates(array, track => track.id) func from utils instead
   let playlist = [];
   tracks.flat().forEach((track) => {
     if (!playlist.some((e) => e.id == track.id)) {
       playlist.push(track);
     }
   });
+
   ctx.body = playlist.sort(() => 0.5 - Math.random());
   ctx.status = 200;
 }

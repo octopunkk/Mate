@@ -2,8 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
 import Welcome from "./components/Welcome";
-import WaitingRoomHost from "./components/WaitingRoomHost";
-import WaitingRoomPlayer from "./components/WaitingRoomPlayer";
+import WaitingRoom from "./components/WaitingRoom";
 import JoinRoom from "./components/JoinRoom";
 import StartGame from "./components/StartGame";
 import "./index.css";
@@ -13,6 +12,13 @@ import {
   Route,
   Link,
 } from "react-router-dom";
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  QueryClient,
+  QueryClientProvider,
+} from "react-query";
 
 const router = createBrowserRouter([
   {
@@ -23,13 +29,10 @@ const router = createBrowserRouter([
     path: "/welcome",
     element: <Welcome />,
   },
-  {
-    path: "/waitingRoomHost",
-    element: <WaitingRoomHost />,
-  },
+
   {
     path: "/waitingRoom/:roomId",
-    element: <WaitingRoomPlayer />,
+    element: <WaitingRoom />,
   },
   {
     path: "/joinRoom",
@@ -41,8 +44,12 @@ const router = createBrowserRouter([
   },
 ]);
 
+const queryClient = new QueryClient();
+
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <QueryClientProvider client={queryClient}>
+      <RouterProvider router={router} />
+    </QueryClientProvider>
   </React.StrictMode>
 );

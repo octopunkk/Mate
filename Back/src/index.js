@@ -3,6 +3,7 @@ const parser = require("koa-bodyparser");
 const cors = require("@koa/cors");
 const router = require("./router");
 const sql = require("./sql");
+const { errorMiddleware } = require("./utils/errorMiddleware");
 const App = new Koa();
 const port = 8000;
 
@@ -18,7 +19,8 @@ const authMiddleware = async (ctx, next) => {
   return next();
 };
 
-App.use(parser())
+App.use(errorMiddleware)
+  .use(parser())
   .use(cors())
   .use(authMiddleware)
   .use(router.routes())
