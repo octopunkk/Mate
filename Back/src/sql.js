@@ -51,8 +51,7 @@ async function refreshToken(credentials) {
 }
 
 async function addPlayerToRoom(spotify_user_id, room_id) {
-  try {
-    const q = await db`
+  const q = await db`
     INSERT INTO players_in_rooms (
       room_id, player_id
     ) VALUES (
@@ -61,10 +60,7 @@ async function addPlayerToRoom(spotify_user_id, room_id) {
     ON CONFLICT DO NOTHING
     RETURNING *
     `;
-    return { room_id: room_id };
-  } catch (e) {
-    return e;
-  }
+  return { room_id: room_id };
 }
 
 async function getRoomFromHost(spotify_user_id) {
@@ -126,11 +122,7 @@ async function getPlayersFromRoom(room_id) {
 }
 
 async function joinRoom(room_id, player_id) {
-  try {
-    return await addPlayerToRoom(player_id, room_id);
-  } catch (e) {
-    return new Error(e);
-  }
+  return await addPlayerToRoom(player_id, room_id);
 }
 
 async function quitRoom(room_id, player_id) {

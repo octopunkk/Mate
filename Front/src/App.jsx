@@ -27,7 +27,9 @@ function App() {
       if (authToken) {
         const user = await server.getUser(authToken);
         if (user) {
-          navigate("/welcome");
+          const history = localStorage.getItem("history");
+          localStorage.removeItem("history");
+          navigate(history || "/welcome");
           return;
         }
       }

@@ -5,20 +5,10 @@ import Welcome from "./components/Welcome";
 import WaitingRoom from "./components/WaitingRoom";
 import JoinRoom from "./components/JoinRoom";
 import StartGame from "./components/StartGame";
+import PrivateRoute from "./components/PrivateRoute";
 import "./index.css";
-import {
-  createBrowserRouter,
-  RouterProvider,
-  Route,
-  Link,
-} from "react-router-dom";
-import {
-  useQuery,
-  useMutation,
-  useQueryClient,
-  QueryClient,
-  QueryClientProvider,
-} from "react-query";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from "react-query";
 
 const router = createBrowserRouter([
   {
@@ -27,20 +17,37 @@ const router = createBrowserRouter([
   },
   {
     path: "/welcome",
-    element: <Welcome />,
+    element: (
+      <PrivateRoute>
+        <Welcome />
+      </PrivateRoute>
+    ),
   },
 
   {
     path: "/waitingRoom/:roomId",
-    element: <WaitingRoom />,
+    element: (
+      <PrivateRoute>
+        {" "}
+        <WaitingRoom />
+      </PrivateRoute>
+    ),
   },
   {
     path: "/joinRoom",
-    element: <JoinRoom />,
+    element: (
+      <PrivateRoute>
+        <JoinRoom />
+      </PrivateRoute>
+    ),
   },
   {
     path: "/start/:roomId",
-    element: <StartGame />,
+    element: (
+      <PrivateRoute>
+        <StartGame />
+      </PrivateRoute>
+    ),
   },
 ]);
 

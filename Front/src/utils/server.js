@@ -62,30 +62,18 @@ const postAuthCode = async (authCode) => {
 };
 
 const getUser = async (authToken) => {
-  try {
-    const response = await getData("user/me", authToken);
-    return response;
-  } catch {
-    return 0;
-  }
+  const response = await getData("user/me", authToken);
+  return response;
 };
 
 const createRoom = async (authToken) => {
-  try {
-    const response = await postData({}, "room", authToken);
-    return response;
-  } catch {
-    return 0;
-  }
+  const response = await postData({}, "room", authToken);
+  return response;
 };
 
 const getRoomInfo = async (authToken, roomId) => {
-  try {
-    const response = await getData("room/" + roomId, authToken);
-    return response;
-  } catch {
-    return 0;
-  }
+  const response = await getData("room/" + roomId, authToken);
+  return response;
 };
 
 const joinRoom = async (authToken, roomId) => {

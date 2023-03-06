@@ -14,6 +14,7 @@ function JoinRoom() {
           localStorage.getItem("authToken"),
           roomCode
         );
+        console.log({ room });
         navigate("../waitingRoom/" + room.room_id);
       } catch (e) {
         console.error(e);

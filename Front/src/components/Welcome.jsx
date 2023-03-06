@@ -1,14 +1,19 @@
 import "./Welcome.css";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import server from "../utils/server";
-import { useState, useEffect } from "react";
 import Avatar from "boring-avatars";
+import { useQuery, useQueryClient } from "react-query";
+import { CircularProgress } from "@mui/material";
+import utils from "../utils/utils";
 
 function Welcome() {
   const navigate = useNavigate();
-  const [user, setUser] = useState({});
+  const queryClient = useQueryClient();
+
   const disconnect = () => {
     localStorage.clear();
+    queryClient.invalidateQueries("user");
     navigate("/");
   };
 
@@ -25,23 +30,22 @@ function Welcome() {
     navigate("../joinRoom");
   };
 
-  useEffect(() => {
-    const getUser = async () => {
-      const res = await server.getUser(localStorage.getItem("authToken"));
-      setUser({
-        displayName: res.displayName,
-        userId: res.userId,
-      });
-    };
-    getUser();
-  }, []);
+  const userQuery = utils.useCurrentUserQuery();
+
+  if (userQuery.isLoading) {
+    return (
+      <div>
+        <CircularProgress />
+      </div>
+    );
+  }
 
   return (
     <div className="Welcome">
-      <h2>Connecté.e en tant que {user.displayName}</h2>
+      <h2>Connecté.e en tant que {userQuery.data.displayName}</h2>
       <Avatar
         size={100}
-        name={user.userId}
+        name={userQuery.data.userId}
         variant="beam"
         colors={["#F6D76B", "#FF9036", "#D6254D", "#FF5475", "#FDEBA9"]}
       />

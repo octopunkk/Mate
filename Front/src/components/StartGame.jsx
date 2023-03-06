@@ -29,6 +29,7 @@ function StartGame() {
   useEffect(() => {
     setRoomId(window.location.pathname.match(/start\/([A-Z]+)/)[1]);
   }, [window.location]);
+
   return (
     <div>
       {gameHasEnded ? (
