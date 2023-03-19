@@ -1,17 +1,56 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import vinyl from "../assets/vinyl.svg";
+import vinyl_arm from "../assets/vinyl-arm.svg";
+import utils from "../utils/utils";
 
 function Track(props) {
   const track = props.track;
+  const audioRef = useRef(null);
+  const rerender = utils.useRerender();
+
   return (
     <div>
       {props.isPlaying ? (
         <div>
           <audio
+            ref={(el) => {
+              audioRef.current = el;
+              el?.addEventListener("pause", () => {
+                rerender();
+              });
+              el?.addEventListener("play", () => {
+                rerender();
+              });
+            }}
             autoPlay
-            controls
             src={track.preview}
             onEnded={() => props.setIsPlaying(false)}
           />
+          <div
+            className="in-game--vinyl"
+            onClick={() =>
+              audioRef.current.paused
+                ? audioRef.current.play()
+                : audioRef.current.pause()
+            }
+          >
+            <img
+              className={
+                audioRef.current?.paused ? "vinylicon" : "vinylicon running"
+              }
+              src={vinyl}
+              width="160px"
+            />
+            <img
+              className={
+                audioRef.current?.paused ? "vinyl_arm" : "vinyl_arm running"
+              }
+              src={vinyl_arm}
+              width="190px"
+              // width="200px"
+            />
+          </div>
+
           <br />
           <button onClick={() => props.setIsPlaying(false)}>
             Révéler le titre
@@ -24,7 +63,7 @@ function Track(props) {
             {track.name} - {track.artist}
           </h4>
           <p>de l'album {track.album}</p>
-          <img src={track.cover} height="200" />
+          <img className="track--cover" src={track.cover} height="200" />
           <br /> <br />
           <button
             onClick={() => {

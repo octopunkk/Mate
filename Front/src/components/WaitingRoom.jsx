@@ -7,6 +7,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import PersonRemoveIcon from "@mui/icons-material/PersonRemove";
 import { useQuery, useQueryClient } from "react-query";
 import utils from "../utils/utils";
+const silence = new Audio();
 
 function WaitingRoom() {
   const navigate = useNavigate();
@@ -24,6 +25,11 @@ function WaitingRoom() {
       roomId
     );
     navigate("/");
+  };
+
+  const start = () => {
+    silence.play();
+    navigate("../start/" + roomId);
   };
 
   const fetchRoomInfo = async () => {
@@ -116,9 +122,7 @@ function WaitingRoom() {
         <div>
           <br />
           <br />
-          <button onClick={() => navigate("../start/" + roomId)}>
-            Démarrer la partie
-          </button>
+          <button onClick={start}>Démarrer la partie</button>
         </div>
       )}
       <br />

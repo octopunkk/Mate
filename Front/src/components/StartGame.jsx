@@ -30,51 +30,51 @@ function StartGame() {
     setRoomId(window.location.pathname.match(/start\/([A-Z]+)/)[1]);
   }, [window.location]);
 
+  if (gameHasEnded) {
+    return (
+      <div>
+        <h2>La partie est terminée !</h2>
+        <button onClick={() => navigate("../waitingRoom/" + roomId)}>
+          Retour a l'écran de lancement
+        </button>
+        <br />
+        <h3>Liste des titres diffusés</h3>
+        {playlist.map((track) => {
+          return (
+            <div key={track.id} className="tracksRecapItem">
+              <img className="tracksRecapItem--cover" src={track.cover} />
+              <p>
+                {track.name} - {track.artist}
+              </p>
+            </div>
+          );
+        })}
+      </div>
+    );
+  }
+
+  if (playlist[0]) {
+    return (
+      <div>
+        <Track
+          track={playlist[playlistIdx]}
+          setPlaylistIdx={setPlaylistIdx}
+          playlistIdx={playlistIdx}
+          isPlaying={isPlaying}
+          setIsPlaying={setIsPlaying}
+          maxLength={playlist.length}
+          setGameHasEnded={setGameHasEnded}
+        />
+      </div>
+    );
+  }
+
   return (
     <div>
-      {gameHasEnded ? (
-        <div>
-          <h2>La partie est terminée !</h2>
-          <button onClick={() => navigate("../waitingRoomHost")}>
-            Retour a l'écran de lancement
-          </button>
-          <br />
-          <h3>Liste des titres diffusés</h3>
-          {playlist.map((track) => {
-            return (
-              <div key={track.id} className="tracksRecapItem">
-                <img className="tracksRecapItem--cover" src={track.cover} />
-                <p>
-                  {track.name} - {track.artist}
-                </p>
-              </div>
-            );
-          })}
-        </div>
-      ) : (
-        <div>
-          {playlist[0] ? (
-            <div>
-              <Track
-                track={playlist[playlistIdx]}
-                setPlaylistIdx={setPlaylistIdx}
-                playlistIdx={playlistIdx}
-                isPlaying={isPlaying}
-                setIsPlaying={setIsPlaying}
-                maxLength={playlist.length}
-                setGameHasEnded={setGameHasEnded}
-              />
-            </div>
-          ) : (
-            <div>
-              <h1>Création de la playlist</h1>
-              <div>
-                <CircularProgress />
-              </div>
-            </div>
-          )}
-        </div>
-      )}
+      <h1>Création de la playlist</h1>
+      <div>
+        <CircularProgress />
+      </div>
     </div>
   );
 }

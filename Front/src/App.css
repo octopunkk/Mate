@@ -1,8 +1,93 @@
 #root {
-  max-width: 1280px;
+  /* max-width: 1280px; */
   margin: 0 auto;
   /* padding: 2rem; */
   text-align: center;
 }
-.appTitle {
+.title {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  font-family: "Kanit", sans-serif;
+  font-size: 30px;
 }
+.subtitle {
+  font-family: "Kanit", sans-serif;
+  font-size: 30px;
+  margin-top: 0;
+}
+
+.title--logo {
+  -webkit-animation: rotating 4s linear infinite;
+}
+
+.header {
+  display: flex;
+  flex-direction: row;
+  font-family: "Kanit", sans-serif;
+}
+
+.header--logo {
+  cursor: pointer;
+  -webkit-animation: rotating 2s linear infinite;
+  animation-play-state: paused;
+}
+
+.header--logo:hover {
+  animation-play-state: running;
+}
+
+.track--cover {
+  border-radius: 3px;
+}
+
+.vinylicon {
+  -webkit-animation: rotating 2s linear infinite;
+  animation-play-state: paused;
+  position: absolute;
+}
+
+.vinyl_arm {
+  margin-top: -25px;
+  margin-left: 20px;
+  -webkit-animation: arm-rotating 30s linear infinite;
+  transform-origin: 80% 25%;
+  animation-play-state: paused;
+}
+
+.running {
+  animation-play-state: running;
+}
+
+.in-game--vinyl {
+  height: 200px;
+}
+
+@-webkit-keyframes rotating {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+  to {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+@-webkit-keyframes arm-rotating {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+  5% {
+    -webkit-transform: rotate(35deg);
+  }
+  to {
+    -webkit-transform: rotate(55deg);
+  }
+}
+/* @-webkit-keyframes arm-rotating {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+  to {
+    -webkit-transform: rotate(360deg);
+  }
+} */

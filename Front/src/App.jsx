@@ -3,6 +3,7 @@ import Spotify from "./utils/spotify";
 import server from "./utils/server";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import logo from "./assets/mate.svg";
 
 function App() {
   const navigate = useNavigate();
@@ -40,9 +41,11 @@ function App() {
 
   return (
     <div className="App">
-      <h1>Blind Test sans nom pour le moment</h1>
-      <p>Et sans blind test</p>
-      <p>Ça arrive</p>
+      <div className="title">
+        <img className="title--logo" src={logo} width="80px" />
+        <h1>MATÉ</h1>
+      </div>
+      <h2 className="subtitle">Blind Test</h2>
       <button onClick={getSpotifyTokens}>Se connecter avec Spotify</button>
     </div>
   );

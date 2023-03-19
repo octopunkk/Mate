@@ -6,6 +6,7 @@ import WaitingRoom from "./components/WaitingRoom";
 import JoinRoom from "./components/JoinRoom";
 import StartGame from "./components/StartGame";
 import PrivateRoute from "./components/PrivateRoute";
+import Header from "./components/Header";
 import "./index.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "react-query";
@@ -19,6 +20,7 @@ const router = createBrowserRouter([
     path: "/welcome",
     element: (
       <PrivateRoute>
+        <Header />
         <Welcome />
       </PrivateRoute>
     ),
@@ -28,7 +30,7 @@ const router = createBrowserRouter([
     path: "/waitingRoom/:roomId",
     element: (
       <PrivateRoute>
-        {" "}
+        <Header />
         <WaitingRoom />
       </PrivateRoute>
     ),
@@ -37,6 +39,7 @@ const router = createBrowserRouter([
     path: "/joinRoom",
     element: (
       <PrivateRoute>
+        <Header />
         <JoinRoom />
       </PrivateRoute>
     ),
@@ -45,6 +48,7 @@ const router = createBrowserRouter([
     path: "/start/:roomId",
     element: (
       <PrivateRoute>
+        <Header />
         <StartGame />
       </PrivateRoute>
     ),
