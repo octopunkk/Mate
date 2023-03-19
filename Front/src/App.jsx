@@ -42,10 +42,12 @@ function App() {
   return (
     <div className="App">
       <div className="title">
-        <img className="title--logo" src={logo} width="80px" />
-        <h1>MATÉ</h1>
+        <img className="title--logo" src={logo} />
+        <div className="title--text">
+          <h1>MATÉ</h1>
+          <h2 className="subtitle">Blind Test</h2>
+        </div>
       </div>
-      <h2 className="subtitle">Blind Test</h2>
       <button onClick={getSpotifyTokens}>Se connecter avec Spotify</button>
     </div>
   );

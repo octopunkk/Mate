@@ -127,6 +127,7 @@ function WaitingRoom() {
       )}
       <br />
       <br />
+      <button onClick={() => navigate("/")}>Retourner à l'accueil</button>
 
       {!isHost && (
         <button className="redButton" onClick={quitGame}>

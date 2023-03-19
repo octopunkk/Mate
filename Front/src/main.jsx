@@ -20,7 +20,6 @@ const router = createBrowserRouter([
     path: "/welcome",
     element: (
       <PrivateRoute>
-        <Header />
         <Welcome />
       </PrivateRoute>
     ),

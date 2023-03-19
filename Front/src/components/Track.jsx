@@ -65,17 +65,24 @@ function Track(props) {
           <p>de l'album {track.album}</p>
           <img className="track--cover" src={track.cover} height="200" />
           <br /> <br />
-          <button
-            onClick={() => {
-              if (props.playlistIdx + 1 < props.maxLength) {
+          {props.playlistIdx + 1 < props.maxLength && (
+            <button
+              onClick={() => {
                 props.setPlaylistIdx((p) => p + 1);
                 props.setIsPlaying(true);
-              } else {
-                props.setGameHasEnded(true);
-              }
+              }}
+            >
+              Passer à la chanson suivante
+            </button>
+          )}
+          <br />
+          <br />
+          <button
+            onClick={() => {
+              props.setGameHasEnded(true);
             }}
           >
-            Passer à la chanson suivante
+            Terminer la partie
           </button>
         </div>
       )}

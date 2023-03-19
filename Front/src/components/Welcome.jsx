@@ -6,6 +6,7 @@ import Avatar from "boring-avatars";
 import { useQuery, useQueryClient } from "react-query";
 import { CircularProgress } from "@mui/material";
 import utils from "../utils/utils";
+import logo from "../assets/mate.svg";
 
 function Welcome() {
   const navigate = useNavigate();
@@ -42,6 +43,13 @@ function Welcome() {
 
   return (
     <div className="Welcome">
+      <div className="title">
+        <img className="title--logo" src={logo} />
+        <div className="title--text">
+          <h1>MATÉ</h1>
+          <h2 className="subtitle">Blind Test</h2>
+        </div>
+      </div>
       <h2>Connecté.e en tant que {userQuery.data.displayName}</h2>
       <Avatar
         size={100}

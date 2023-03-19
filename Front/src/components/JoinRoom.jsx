@@ -63,6 +63,9 @@ function JoinRoom() {
       <br></br>
       <br></br>
       <button onClick={join}>Rejoindre la partie</button>
+      <br></br>
+      <br></br>
+      <button onClick={() => navigate("/")}>Retourner à l'accueil</button>
     </div>
   );
 }

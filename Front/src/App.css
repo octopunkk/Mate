@@ -10,14 +10,21 @@
   justify-content: center;
   font-family: "Kanit", sans-serif;
   font-size: 30px;
+  margin: 20px;
 }
 .subtitle {
   font-family: "Kanit", sans-serif;
-  font-size: 30px;
+  font-size: 38px;
   margin-top: 0;
+}
+.title--text h1 {
+  margin: 3px;
+  font-size: 70px;
 }
 
 .title--logo {
+  width: 130px;
+  height: 130px;
   -webkit-animation: rotating 4s linear infinite;
 }
 
@@ -83,11 +90,3 @@
     -webkit-transform: rotate(55deg);
   }
 }
-/* @-webkit-keyframes arm-rotating {
-  from {
-    -webkit-transform: rotate(0deg);
-  }
-  to {
-    -webkit-transform: rotate(360deg);
-  }
-} */
