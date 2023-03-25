@@ -11,5 +11,6 @@ RUN npm install
 # Bundle app source
 COPY src/ src
 COPY migrations/ migrations
+COPY ley.config.js .
 
 CMD [ "npm", "start" ]
