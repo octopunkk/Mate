@@ -7,7 +7,8 @@ import CircularProgress from "@mui/material/CircularProgress";
 import PersonRemoveIcon from "@mui/icons-material/PersonRemove";
 import { useQuery, useQueryClient } from "react-query";
 import utils from "../utils/utils";
-const silence = new Audio();
+import silencemp3 from "../assets/silence.mp3";
+const silence = new Audio(silencemp3);
 
 function WaitingRoom() {
   const navigate = useNavigate();
@@ -127,7 +128,9 @@ function WaitingRoom() {
       )}
       <br />
       <br />
-      <button onClick={() => navigate("/")}>Retourner à l'accueil</button>
+      {isHost && (
+        <button onClick={() => navigate("/")}>Retourner à l'accueil</button>
+      )}
 
       {!isHost && (
         <button className="redButton" onClick={quitGame}>
