@@ -1,5 +1,5 @@
 async function getAuthorizeURL() {
-  const URL = "http://127.0.0.1:8000/get_auth_url";
+  const URL = "https://mate.apps.besson.co/get_auth_url";
   let data = await fetch(URL, { method: "GET" });
   let json = await data.json();
   return json.url;

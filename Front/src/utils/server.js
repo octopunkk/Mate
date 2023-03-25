@@ -1,4 +1,4 @@
-const URL = "http://127.0.0.1:8000/";
+const URL = "https://mate.apps.besson.co/";
 
 const postData = async (data, endpoint, authToken) => {
   const response = await fetch(URL + endpoint, {
