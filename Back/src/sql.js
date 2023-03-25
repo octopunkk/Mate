@@ -1,12 +1,14 @@
 const utils = require("./utils/utils");
 const postgres = require("postgres");
 
-const db = postgres({
-  host: process.env.PGHOST,
-  port: 5432,
-  username: process.env.PGUSER,
-  password: process.env.PGPASSWORD,
-});
+const db = postgres(
+  process.env.DATABASE_URL || {
+    host: process.env.PGHOST,
+    port: 5432,
+    username: process.env.PGUSER,
+    password: process.env.PGPASSWORD,
+  }
+);
 
 async function upsertUser(user) {
   const q = await db`
