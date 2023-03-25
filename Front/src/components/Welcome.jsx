@@ -50,7 +50,9 @@ function Welcome() {
           <h2 className="subtitle">Blind Test</h2>
         </div>
       </div>
-      <h2>Connecté.e en tant que {userQuery.data.displayName}</h2>
+      <h2 className="connectedAs">
+        Connecté.e en tant que {userQuery.data.displayName}
+      </h2>
       <Avatar
         size={100}
         name={userQuery.data.userId}

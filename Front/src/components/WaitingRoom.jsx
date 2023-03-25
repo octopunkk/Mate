@@ -132,11 +132,7 @@ function WaitingRoom() {
         <button onClick={() => navigate("/")}>Retourner à l'accueil</button>
       )}
 
-      {!isHost && (
-        <button className="redButton" onClick={quitGame}>
-          Quitter la partie
-        </button>
-      )}
+      {!isHost && <button onClick={quitGame}>Quitter la partie</button>}
     </div>
   );
 }

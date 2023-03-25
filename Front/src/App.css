@@ -44,6 +44,10 @@
   animation-play-state: running;
 }
 
+.connectedAs {
+  margin: 5px;
+}
+
 .track--cover {
   border-radius: 3px;
 }
