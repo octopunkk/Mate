@@ -1,6 +1,5 @@
 const Router = require("koa-router");
 const {
-  getAuthURL,
   addUser,
   getUser,
   createRoom,
@@ -9,6 +8,7 @@ const {
   quitRoom,
   kickFromRoom,
   getPlaylist,
+  connectUser,
 } = require("./controllers/events.controllers");
 
 const router = new Router();
@@ -22,9 +22,8 @@ const requiresAuthUser = (ctx, next) => {
   return next();
 };
 
-router.get("/get_auth_url", getAuthURL);
-
 router.post("/user", addUser);
+router.post("/user/login", connectUser);
 router.get("/user/me", requiresAuthUser, getUser);
 
 router.post("/room", requiresAuthUser, createRoom);

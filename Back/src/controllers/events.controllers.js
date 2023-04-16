@@ -1,31 +1,55 @@
 const Spotify = require("../utils/spotify");
 const sql = require("../sql");
 const { Unauthorized } = require("../utils/errorMiddleware");
-
-const getAuthURL = (ctx) => {
-  ctx.body = { url: Spotify.authorizeURL() };
-  ctx.status = 200;
-};
+const bcrypt = require("bcrypt");
+const utils = require("../utils/utils");
 
 async function addUser(ctx) {
-  const userTokens = await Spotify.getUserTokens(ctx.request.body.authCode);
-  const user = await Spotify.getUserData(userTokens);
-  ctx.body = {
-    auth_token: user.auth_token,
-  };
-  ctx.status = 201;
+  console.log("adding user");
+  console.log(ctx.request.body);
+  const hash = await bcrypt.hash(ctx.request.body.password, 5);
+  const user = await sql.addUser({
+    name: ctx.request.body.name,
+    hash: hash,
+    auth_token: utils.generateAuthToken(),
+  });
+  if (user) {
+    ctx.body = {
+      auth_token: user.auth_token,
+    };
+    ctx.status = 201;
+  } else {
+    console.log(err);
+    ctx.status = 409;
+  }
+}
+
+async function connectUser(ctx) {
+  console.log("login user");
+  const user = await sql.userFromName(ctx.request.body.name);
+  console.log(user);
+  const correctPassword = await bcrypt.compare(
+    ctx.request.body.password,
+    user.hashed_password
+  );
+  if (correctPassword) {
+    ctx.status = 200;
+    ctx.body = { auth_token: user.auth_token };
+  } else {
+    ctx.status = 403;
+  }
 }
 
 async function getUser(ctx) {
   ctx.body = {
-    displayName: ctx.user.spotify_display_name,
-    userId: ctx.user.spotify_user_id,
+    displayName: ctx.user.name,
+    userId: ctx.user.id,
   };
   ctx.status = 200;
 }
 
 async function createRoom(ctx) {
-  const res = await sql.getRoomFromHost(ctx.user.spotify_user_id);
+  const res = await sql.getRoomFromHost(ctx.user.id);
   ctx.body = res;
   ctx.status = 201;
 }
@@ -38,7 +62,7 @@ async function getRoomInfo(ctx) {
 }
 
 async function joinRoom(ctx) {
-  const res = await sql.joinRoom(ctx.params.id, ctx.user.spotify_user_id);
+  const res = await sql.joinRoom(ctx.params.id, ctx.user.id);
   if (res) {
     ctx.body = res;
     ctx.status = 201;
@@ -49,7 +73,7 @@ async function joinRoom(ctx) {
 }
 
 async function quitRoom(ctx) {
-  const res = await sql.quitRoom(ctx.params.id, ctx.user.spotify_user_id);
+  const res = await sql.quitRoom(ctx.params.id, ctx.user.id);
   if (res) {
     ctx.body = res;
     ctx.status = 200;
@@ -60,7 +84,7 @@ async function quitRoom(ctx) {
 }
 async function kickFromRoom(ctx) {
   const host = await sql.getHost(ctx.params.id);
-  if (host.host_player_id !== ctx.user.spotify_user_id) {
+  if (host.host_player_id !== ctx.user.id) {
     ctx.body = "Request unauthorized";
     ctx.status = 403;
     return;
@@ -76,7 +100,7 @@ async function kickFromRoom(ctx) {
 }
 
 const assertIsHost = (ctx, hostId) => {
-  if (hostId !== ctx.user.spotify_user_id) {
+  if (hostId !== ctx.user.id) {
     throw new Unauthorized("is not game host");
   }
 };
@@ -88,7 +112,7 @@ async function getPlaylist(ctx) {
   const players = await sql.getPlayersFromRoom(ctx.params.id);
   const tracks = await Promise.all(
     players.map(async (player) => {
-      const playerData = await sql.userFromId(player.spotify_user_id);
+      const playerData = await sql.userFromId(player.id);
       const playerTopTracks = await Spotify.getUserTopTracks(playerData);
       const recommendations = await Spotify.getRecommendations(
         playerData,
@@ -120,8 +144,8 @@ async function getPlaylist(ctx) {
 }
 
 module.exports = {
-  getAuthURL,
   addUser,
+  connectUser,
   getUser,
   createRoom,
   joinRoom,

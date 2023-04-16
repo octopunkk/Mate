@@ -4,6 +4,8 @@ import App from "./App";
 import Welcome from "./components/Welcome";
 import WaitingRoom from "./components/WaitingRoom";
 import JoinRoom from "./components/JoinRoom";
+import CreateAccount from "./components/CreateAccount";
+
 import StartGame from "./components/StartGame";
 import PrivateRoute from "./components/PrivateRoute";
 import Header from "./components/Header";
@@ -15,6 +17,15 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
+  },
+  {
+    path: "/new",
+    element: (
+      <>
+        {" "}
+        <Header /> <CreateAccount />{" "}
+      </>
+    ),
   },
   {
     path: "/welcome",

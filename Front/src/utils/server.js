@@ -1,4 +1,5 @@
-const URL = "https://mate.apps.besson.co/";
+// const URL = "https://mate.apps.besson.co/";
+const URL = "http://127.0.0.1:8000/";
 
 const postData = async (data, endpoint, authToken) => {
   const response = await fetch(URL + endpoint, {
@@ -55,6 +56,20 @@ const deleteData = async (data, endpoint, authToken) => {
   }
 };
 
+const addUser = async (user) => {
+  const response = await postData(user, "user");
+  localStorage.setItem("authToken", response.auth_token);
+  return response;
+};
+
+const connectUser = async (user) => {
+  console.log("connecting user");
+  const response = await postData(user, "user/login");
+  console.log(response);
+  localStorage.setItem("authToken", response.auth_token);
+  return response;
+};
+
 const postAuthCode = async (authCode) => {
   const response = await postData({ authCode }, "user");
   localStorage.setItem("authToken", response.auth_token);
@@ -98,6 +113,8 @@ const getPlaylist = async (authToken, roomId) => {
 
 export default {
   postAuthCode,
+  addUser,
+  connectUser,
   getUser,
   createRoom,
   getRoomInfo,

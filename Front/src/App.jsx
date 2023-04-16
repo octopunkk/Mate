@@ -1,28 +1,14 @@
 import "./App.css";
 import Spotify from "./utils/spotify";
 import server from "./utils/server";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import logo from "./assets/mate.svg";
 
 function App() {
   const navigate = useNavigate();
   const [authToken, setAuthToken] = useState(localStorage.getItem("authToken"));
-
-  async function getSpotifyTokens() {
-    const redirectURL = await Spotify.getAuthorizeURL();
-    window.location = redirectURL;
-  }
-
-  const checkForAuthCode = async () => {
-    let urlParams = new URLSearchParams(location.search);
-    let authCode = urlParams.get("code");
-    if (authCode) {
-      await server.postAuthCode(authCode);
-      setAuthToken(localStorage.getItem("authToken"));
-    }
-  };
-
+  const formRef = useRef(null);
   useEffect(() => {
     const getAuthToken = async () => {
       if (authToken) {
@@ -34,7 +20,6 @@ function App() {
           return;
         }
       }
-      await checkForAuthCode();
     };
     getAuthToken();
   }, [authToken]);
@@ -48,7 +33,32 @@ function App() {
           <h2 className="subtitle">Blind Test</h2>
         </div>
       </div>
-      <button onClick={getSpotifyTokens}>Se connecter avec Spotify</button>
+      <form id="form" ref={(r) => (formRef.current = r)}>
+        <input placeholder="Nom d'utilisateur" id="name" maximum-scale="1" />
+        <br /> <br />
+        <input
+          placeholder="Mot de passe"
+          type="password"
+          id="password"
+          maximum-scale="1"
+        />
+        <br /> <br />
+        <button
+          type="submit"
+          onClick={(e) => {
+            e.preventDefault();
+            server.connectUser({
+              name: formRef.current.elements.name.value,
+              password: formRef.current.elements.password.value,
+            });
+            navigate("/welcome");
+          }}
+        >
+          Se connecter
+        </button>
+      </form>
+      <p>ou</p>
+      <button onClick={() => {}}>Créer un compte</button>
     </div>
   );
 }

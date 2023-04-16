@@ -1,12 +1,10 @@
 exports.up = async function (DB) {
   await DB`
     CREATE TABLE users (
-      spotify_user_id text PRIMARY KEY,
-      spotify_auth_token text NOT NULL,
-      spotify_refresh_token text NOT NULL,
-      spotify_expires_at DATE NOT NULL,
-      spotify_display_name text NOT NULL,
-      auth_token text NOT NULL
+      id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+      name text NOT NULL UNIQUE,
+      auth_token text NOT NULL,
+      hashed_password text NOT NULL
     )
   `;
 };

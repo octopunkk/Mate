@@ -10,27 +10,47 @@ const db = postgres(
   }
 );
 
+async function addUser(user) {
+  const q = await db`
+  INSERT INTO users (
+    name, hashed_password, auth_token
+  ) VALUES (
+    ${user.name}, ${user.hash},${user.auth_token}
+  )
+  RETURNING *
+`;
+  return q[0];
+}
+
+async function userFromName(name) {
+  const q = await db`
+    SELECT * FROM users
+    WHERE name = ${name}
+  `;
+  return q[0];
+}
+
 async function upsertUser(user) {
   const q = await db`
   INSERT INTO users (
-    spotify_user_id, spotify_auth_token, spotify_refresh_token, spotify_expires_at, spotify_display_name, auth_token
+    id, name, auth_token
   ) VALUES (
-    ${user.spotify_user_id}, ${user.spotify_auth_token}, ${user.spotify_refresh_token}, ${user.spotify_expires_at}, ${user.spotify_display_name},${user.auth_token}
+    ${user.id}, ${user.name},${user.auth_token}
   )
   ON CONFLICT DO NOTHING
   RETURNING *
 `;
   const q2 = await db`
   SELECT * FROM users
-  WHERE spotify_user_id = ${user.spotify_user_id}
+  WHERE id = ${user.id}
   `;
   return q2;
 }
 
-async function userFromId(spotify_user_id) {
+async function userFromId(id) {
   const q = await db`
     SELECT * FROM users
-    WHERE spotify_user_id = ${spotify_user_id}
+    WHERE id = ${id}
   `;
   return q[0];
 }
@@ -43,21 +63,12 @@ async function userFromAuthToken(auth_token) {
   return q;
 }
 
-async function refreshToken(credentials) {
-  const q = await db`
-  UPDATE users
-  SET spotify_auth_token = ${credentials.spotify_auth_token}, spotify_expires_at = ${credentials.spotify_expires_at}
-  WHERE spotify_user_id = ${credentials.spotify_user_id}
-  `;
-  return q;
-}
-
-async function addPlayerToRoom(spotify_user_id, room_id) {
+async function addPlayerToRoom(id, room_id) {
   const q = await db`
     INSERT INTO players_in_rooms (
       room_id, player_id
     ) VALUES (
-      ${room_id}, ${spotify_user_id}
+      ${room_id}, ${id}
     )
     ON CONFLICT DO NOTHING
     RETURNING *
@@ -65,10 +76,10 @@ async function addPlayerToRoom(spotify_user_id, room_id) {
   return { room_id: room_id };
 }
 
-async function getRoomFromHost(spotify_user_id) {
+async function getRoomFromHost(id) {
   const q = await db`
   SELECT * FROM rooms
-  WHERE host_player_id = ${spotify_user_id}
+  WHERE host_player_id = ${id}
   `;
   if (q[0]) {
     return q[0];
@@ -78,7 +89,7 @@ async function getRoomFromHost(spotify_user_id) {
     INSERT INTO rooms (
       id, host_player_id
     ) VALUES (
-      ${roomId}, ${spotify_user_id}
+      ${roomId}, ${id}
     )
     RETURNING *
     `;
@@ -95,8 +106,8 @@ async function getRoomFromId(room_id) {
 
 async function getHost(room_id) {
   const q = await db`
-  SELECT spotify_display_name, host_player_id FROM rooms
-  JOIN users ON spotify_user_id = host_player_id
+  SELECT name, host_player_id FROM rooms
+  JOIN users ON id = host_player_id
   WHERE id = ${room_id}
 `;
   return q[0];
@@ -105,19 +116,19 @@ async function getHost(room_id) {
 async function getPlayersFromRoom(room_id) {
   const q = await db`
     SELECT 
-      users.spotify_user_id,
-      users.spotify_display_name
+      users.id,
+      users.name
     FROM players_in_rooms
     INNER JOIN users
-    ON player_id = spotify_user_id
+    ON player_id = id
     WHERE room_id = ${room_id}
     UNION
     SELECT 
-      users.spotify_user_id,
-      users.spotify_display_name
+      users.id,
+      users.name
     FROM rooms
     INNER JOIN users
-    ON host_player_id = spotify_user_id
+    ON host_player_id = id
     WHERE id = ${room_id}
   `;
   return q;
@@ -134,10 +145,11 @@ async function quitRoom(room_id, player_id) {
 `;
 }
 module.exports = {
+  addUser,
   upsertUser,
   userFromAuthToken,
   userFromId,
-  refreshToken,
+  userFromName,
   getRoomFromHost,
   getRoomFromId,
   addPlayerToRoom,

@@ -52,13 +52,6 @@
   gap: 10px;
 }
 
-.redButton {
-  background-color: #f44336;
-}
-.redButton:hover {
-  border-color: #ef5350;
-}
-
 .icon {
   padding: 5px;
 }
