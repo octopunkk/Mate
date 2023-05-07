@@ -6,10 +6,12 @@ import logo from "../assets/mate.svg";
 function CreateAccount() {
   const navigate = useNavigate();
   const formRef = useRef(null);
+  const [error, setError] = useState("");
 
   return (
     <div className="CreateAccount">
       <h2>Création d'un nouveau compte</h2>
+      <p>{error}</p>
       <form id="form" ref={(r) => (formRef.current = r)}>
         <input placeholder="Nom d'utilisateur" id="name" maximum-scale="1" />
         <br /> <br />
@@ -22,13 +24,17 @@ function CreateAccount() {
         <br /> <br />
         <button
           type="submit"
-          onClick={(e) => {
+          onClick={async (e) => {
             e.preventDefault();
-            server.addUser({
-              name: formRef.current.elements.name.value,
-              password: formRef.current.elements.password.value,
-            });
-            navigate("/welcome");
+            try {
+              const res = await server.addUser({
+                name: formRef.current.elements.name.value,
+                password: formRef.current.elements.password.value,
+              });
+              navigate("/welcome");
+            } catch {
+              setError("Ce nom d'utilisateur est déjà pris !");
+            }
           }}
         >
           Créer un compte

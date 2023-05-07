@@ -45,9 +45,9 @@ function App() {
         <br /> <br />
         <button
           type="submit"
-          onClick={(e) => {
+          onClick={async (e) => {
             e.preventDefault();
-            server.connectUser({
+            await server.connectUser({
               name: formRef.current.elements.name.value,
               password: formRef.current.elements.password.value,
             });
@@ -58,7 +58,13 @@ function App() {
         </button>
       </form>
       <p>ou</p>
-      <button onClick={() => {}}>Créer un compte</button>
+      <button
+        onClick={() => {
+          navigate("/new");
+        }}
+      >
+        Créer un compte
+      </button>
     </div>
   );
 }

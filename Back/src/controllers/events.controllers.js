@@ -8,18 +8,17 @@ async function addUser(ctx) {
   console.log("adding user");
   console.log(ctx.request.body);
   const hash = await bcrypt.hash(ctx.request.body.password, 5);
-  const user = await sql.addUser({
-    name: ctx.request.body.name,
-    hash: hash,
-    auth_token: utils.generateAuthToken(),
-  });
-  if (user) {
+  try {
+    const user = await sql.addUser({
+      name: ctx.request.body.name,
+      hash: hash,
+      auth_token: utils.generateAuthToken(),
+    });
     ctx.body = {
       auth_token: user.auth_token,
     };
     ctx.status = 201;
-  } else {
-    console.log(err);
+  } catch (err) {
     ctx.status = 409;
   }
 }
