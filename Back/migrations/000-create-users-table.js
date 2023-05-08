@@ -4,7 +4,8 @@ exports.up = async function (DB) {
       id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
       name text NOT NULL UNIQUE,
       auth_token text NOT NULL,
-      hashed_password text NOT NULL
+      hashed_password text NOT NULL,
+      info jsonb
     )
   `;
 };

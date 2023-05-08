@@ -11,6 +11,8 @@ const {
   connectUser,
 } = require("./controllers/events.controllers");
 
+const { getSearchResults } = require("./utils/spotify");
+
 const router = new Router();
 
 const requiresAuthUser = (ctx, next) => {
@@ -36,4 +38,6 @@ router.post("/room/:id/quit", requiresAuthUser, quitRoom);
 router.delete("/room/:id/players/:playerId", requiresAuthUser, kickFromRoom);
 
 router.get("/room/:id/playlist", requiresAuthUser, getPlaylist);
+
+router.get("/search/:q", requiresAuthUser, getSearchResults);
 module.exports = router;

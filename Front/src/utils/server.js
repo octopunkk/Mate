@@ -63,7 +63,6 @@ const addUser = async (user) => {
 };
 
 const connectUser = async (user) => {
-  console.log("connecting user");
   const response = await postData(user, "user/login");
   console.log(response);
   localStorage.setItem("authToken", response.auth_token);
@@ -111,6 +110,11 @@ const getPlaylist = async (authToken, roomId) => {
   return await getData("room/" + roomId + "/playlist", authToken);
 };
 
+const getSearchResults = async (authToken, q) => {
+  const res = await getData("search/" + q, authToken);
+  return res;
+};
+
 export default {
   postAuthCode,
   addUser,
@@ -122,4 +126,5 @@ export default {
   quitRoom,
   kickFromRoom,
   getPlaylist,
+  getSearchResults,
 };

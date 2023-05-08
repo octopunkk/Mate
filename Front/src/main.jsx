@@ -9,6 +9,7 @@ import CreateAccount from "./components/CreateAccount";
 import StartGame from "./components/StartGame";
 import PrivateRoute from "./components/PrivateRoute";
 import Header from "./components/Header";
+import Settings from "./components/Settings";
 import "./index.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "react-query";
@@ -22,8 +23,7 @@ const router = createBrowserRouter([
     path: "/new",
     element: (
       <>
-        {" "}
-        <Header /> <CreateAccount />{" "}
+        <Header /> <CreateAccount />
       </>
     ),
   },
@@ -35,13 +35,21 @@ const router = createBrowserRouter([
       </PrivateRoute>
     ),
   },
-
   {
     path: "/waitingRoom/:roomId",
     element: (
       <PrivateRoute>
         <Header />
         <WaitingRoom />
+      </PrivateRoute>
+    ),
+  },
+  {
+    path: "/me",
+    element: (
+      <PrivateRoute>
+        <Header />
+        <Settings />
       </PrivateRoute>
     ),
   },

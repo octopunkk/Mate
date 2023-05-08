@@ -5,8 +5,6 @@ const bcrypt = require("bcrypt");
 const utils = require("../utils/utils");
 
 async function addUser(ctx) {
-  console.log("adding user");
-  console.log(ctx.request.body);
   const hash = await bcrypt.hash(ctx.request.body.password, 5);
   try {
     const user = await sql.addUser({
@@ -24,9 +22,7 @@ async function addUser(ctx) {
 }
 
 async function connectUser(ctx) {
-  console.log("login user");
   const user = await sql.userFromName(ctx.request.body.name);
-  console.log(user);
   const correctPassword = await bcrypt.compare(
     ctx.request.body.password,
     user.hashed_password
@@ -43,6 +39,7 @@ async function getUser(ctx) {
   ctx.body = {
     displayName: ctx.user.name,
     userId: ctx.user.id,
+    info: ctx.user.info,
   };
   ctx.status = 200;
 }

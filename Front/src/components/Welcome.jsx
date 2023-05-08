@@ -40,7 +40,6 @@ function Welcome() {
       </div>
     );
   }
-
   return (
     <div className="Welcome">
       <div className="title">
@@ -63,6 +62,8 @@ function Welcome() {
       <button onClick={goToWaitingRoom}>Créer une partie</button>
       <br /> <br />
       <button onClick={goToJoinRoom}>Rejoindre une partie</button>
+      <br /> <br />
+      <button onClick={() => navigate("/me")}>Préférences</button>
       <br /> <br />
       <button onClick={disconnect}>Se déconnecter</button>
     </div>

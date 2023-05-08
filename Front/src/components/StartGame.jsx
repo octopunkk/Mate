@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import server from "../utils/server";
 import Track from "./Track";
 import { useNavigate } from "react-router-dom";
-import "./StartGame.css";
+import "./tracksRecap.css";
 
 function StartGame() {
   const [roomId, setRoomId] = useState("");

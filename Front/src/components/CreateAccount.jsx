@@ -1,7 +1,7 @@
 import server from "../utils/server";
-import { useEffect, useState, useRef } from "react";
+import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import logo from "../assets/mate.svg";
+import React from "react";
 
 function CreateAccount() {
   const navigate = useNavigate();

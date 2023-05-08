@@ -8,6 +8,45 @@ const mainSpotifyApi = new SpotifyWebApi({
   redirectUri: process.env.SPOTIFY_REDIRECT_URI,
 });
 
+const getAccessToken = async () => {
+  const res = await fetch("https://accounts.spotify.com/api/token", {
+    headers: {
+      Authorization:
+        "Basic " +
+        new Buffer.from(
+          process.env.SPOTIFY_CLIENT_ID +
+            ":" +
+            process.env.SPOTIFY_CLIENT_SECRET
+        ).toString("base64"),
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    method: "POST",
+    body: "grant_type=client_credentials",
+    json: true,
+  });
+  const json = await res.json();
+  return json.access_token;
+};
+
+const getSearchResults = async (ctx) => {
+  const term = ctx.params.q;
+  if (!term) {
+    return [];
+  }
+  const access_token = await getAccessToken();
+  const response = await fetch(
+    `https://api.spotify.com/v1/search?q=${term}&type=artist,track,album`,
+    {
+      headers: { Authorization: `Bearer ${access_token}` },
+    }
+  );
+  const json = await response.json();
+  if (json) {
+    ctx.body = json;
+    ctx.status = 200;
+  }
+};
+
 // const scopes = ["user-top-read"];
 
 // const authorizeURL = () => {
@@ -155,10 +194,5 @@ const mainSpotifyApi = new SpotifyWebApi({
 // }
 
 module.exports = {
-  // authorizeURL,
-  // getUserTokens,
-  // getUserData,
-  // getUserTopTracks,
-  // getRecommendations,
-  // getUserTopArtists,
+  getSearchResults,
 };
