@@ -39,7 +39,7 @@ async function getUser(ctx) {
   ctx.body = {
     displayName: ctx.user.name,
     userId: ctx.user.id,
-    info: ctx.user.info,
+    info: JSON.parse(ctx.user.info),
   };
   ctx.status = 200;
 }
@@ -64,6 +64,20 @@ async function joinRoom(ctx) {
     ctx.status = 201;
   } else {
     ctx.body = "Room doesn't exist";
+    ctx.status = 404;
+  }
+}
+
+async function updateTracklist(ctx) {
+  const res = await sql.updateTracklist(
+    ctx.request.body.tracklist,
+    ctx.user.id
+  );
+  if (res) {
+    ctx.body = res;
+    ctx.status = 201;
+  } else {
+    ctx.body = "problem updating user tracklist";
     ctx.status = 404;
   }
 }
@@ -149,4 +163,5 @@ module.exports = {
   quitRoom,
   kickFromRoom,
   getPlaylist,
+  updateTracklist,
 };

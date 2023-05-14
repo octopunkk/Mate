@@ -2,21 +2,19 @@ import React, { useEffect, useRef, useState } from "react";
 import utils from "../utils/utils";
 import "./SpotifySearch.css";
 import server from "../utils/server";
+import plusicon from "../assets/plus.svg";
 
 const debounceResults = utils.debounce(async (str, setRes) => {
   const searchResults = await server.getSearchResults(
     localStorage.getItem("authToken"),
     str
   );
-  console.log("coucou");
-  setRes(searchResults.tracks.items);
+  setRes(searchResults.tracks.items.splice(0, 5));
   return searchResults;
-}, 500);
+}, 200);
 
-function SpotifySearch() {
+function SpotifySearch(props) {
   const userQuery = utils.useCurrentUserQuery();
-  const tracks = userQuery.data.info?.tracks;
-  const genres = userQuery.data.info?.genres;
   const [search, setSearch] = useState("");
   const [results, setResults] = useState([]);
 
@@ -24,7 +22,7 @@ function SpotifySearch() {
     setSearch(search);
     debounceResults(search, setResults);
   };
-  console.log(results);
+
   return (
     <div className="SpotifySearch">
       <div className="searchbar">
@@ -44,7 +42,10 @@ function SpotifySearch() {
           viewBox="0 0 16 16"
           display={search ? "block" : "none"}
           style={{ cursor: "pointer" }}
-          onClick={() => setSearch("")}
+          onClick={() => {
+            setSearch("");
+            setResults([]);
+          }}
         >
           <path d="M1.47 1.47a.75.75 0 0 1 1.06 0L8 6.94l5.47-5.47a.75.75 0 1 1 1.06 1.06L9.06 8l5.47 5.47a.75.75 0 1 1-1.06 1.06L8 9.06l-5.47 5.47a.75.75 0 0 1-1.06-1.06L6.94 8 1.47 2.53a.75.75 0 0 1 0-1.06z"></path>
         </svg>
@@ -52,14 +53,26 @@ function SpotifySearch() {
       {results &&
         results.map((track) => {
           return (
-            <div key={track.id} className="tracksRecapItem">
+            <div key={track.id} className="trackResult">
               <img
                 className="tracksRecapItem--cover"
                 src={track.album.images[0].url}
               />
-              <p>
-                {track.name} - {track.artists[0].name}
-              </p>
+              <div className="trackResult--text">
+                {track.name} <br /> {track.artists[0].name}
+              </div>
+              <img
+                src={plusicon}
+                className="trackResult--add"
+                onClick={() => {
+                  props.addTrack({
+                    id: track.id,
+                    name: track.name,
+                    cover: track.album.images[0].url,
+                    artist: track.artists[0].name,
+                  });
+                }}
+              />
             </div>
           );
         })}

@@ -9,6 +9,7 @@ const {
   kickFromRoom,
   getPlaylist,
   connectUser,
+  updateTracklist,
 } = require("./controllers/events.controllers");
 
 const { getSearchResults } = require("./utils/spotify");
@@ -40,4 +41,6 @@ router.delete("/room/:id/players/:playerId", requiresAuthUser, kickFromRoom);
 router.get("/room/:id/playlist", requiresAuthUser, getPlaylist);
 
 router.get("/search/:q", requiresAuthUser, getSearchResults);
+
+router.post("/user/tracks", requiresAuthUser, updateTracklist);
 module.exports = router;

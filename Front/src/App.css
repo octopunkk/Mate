@@ -74,6 +74,31 @@
   height: 200px;
 }
 
+.trackResult {
+  display: flex;
+  width: 300px;
+  flex-direction: row;
+  align-items: center;
+  padding: 9px;
+}
+
+.trackResult--text {
+  flex-grow: 1;
+  overflow: ellipsis;
+}
+
+.trackResult--add {
+  height: 30px;
+  transition: all 0.2s;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.trackResult--add:hover {
+  transform: rotate(90deg);
+  background-color: #ffffff31;
+}
+
 @-webkit-keyframes rotating {
   from {
     -webkit-transform: rotate(0deg);

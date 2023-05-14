@@ -115,6 +115,10 @@ const getSearchResults = async (authToken, q) => {
   return res;
 };
 
+const updateTracks = async (authToken, newTracklist) => {
+  return await postData({ tracklist: newTracklist }, "user/tracks", authToken);
+};
+
 export default {
   postAuthCode,
   addUser,
@@ -127,4 +131,5 @@ export default {
   kickFromRoom,
   getPlaylist,
   getSearchResults,
+  updateTracks,
 };

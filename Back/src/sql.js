@@ -144,6 +144,14 @@ async function quitRoom(room_id, player_id) {
   WHERE room_id = ${room_id} AND player_id = ${player_id}
 `;
 }
+
+async function updateTracklist(tracklist, player_id) {
+  return await db`
+  UPDATE users
+  SET info = (${JSON.stringify(tracklist)})
+  WHERE id = ${player_id}
+  `;
+}
 module.exports = {
   addUser,
   upsertUser,
@@ -157,4 +165,5 @@ module.exports = {
   joinRoom,
   getHost,
   quitRoom,
+  updateTracklist,
 };
